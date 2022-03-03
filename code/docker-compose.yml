@@ -1,0 +1,10 @@
+version: '3'
+services:
+  python3:
+    build: .
+    container_name: 'wikirl-gym'
+    working_dir: '/root/'
+    tty: true
+    volumes:
+      - ./:/root/
+      - ~/.mujoco:/root/.mujoco
