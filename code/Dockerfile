@@ -1,18 +1,10 @@
-FROM continuumio/miniconda3
+FROM python:3.8-slim-buster
 
-ENV PATH="/root/miniconda3/bin:${PATH}"
-ARG PATH="/root/miniconda3/bin:${PATH}"
-
-RUN apt-get update && apt-get install -y libgtk2.0-dev && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN conda update -n base -c defaults conda && \
-    conda install -c anaconda python=3.8 && \
-    conda install -c hcc free-mujoco-py && \
-    conda install -c hcc gym && \
-    conda install -c huggingface transformers && \
-    conda install -c itsandrewtruong wandb
+RUN pip3 install mujoco-py && \
+    pip3 install gym && \
+    pip3 install transformers && \
+    pip3 install wandb
 
 # Create the environment:
 COPY . .
-RUN conda env create -f conda_env.yml
+CMD ["bash"]
