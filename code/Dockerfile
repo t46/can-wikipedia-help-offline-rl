@@ -1,15 +1,11 @@
 FROM python:3.8-slim-buster
 
-RUN apt-get install sudo && \
-    sudo apt-get install vim && \
-    sudo apt-get install git && \
-    sudo apt-get install libosmesa6-dev && \
-    sudo apt-get install patchelf
-RUN pip install mujoco-py && \
-    pip install gym && \
-    pip install transformers && \
-    pip install wandb
-
+RUN apt -y update && \
+    apt -y install sudo && \
+    sudo apt -y install vim && \
+    sudo apt -y install git && \
+    sudo apt -y install libosmesa6-dev && \
+    sudo apt -y install patchelf
 # Create the environment:
 COPY . .
 
