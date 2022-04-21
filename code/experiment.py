@@ -35,7 +35,8 @@ def experiment(
 ):
     torch.manual_seed(variant["seed"])
     os.makedirs(variant["outdir"], exist_ok=True)
-    device = variant.get("device", "cuda")
+    # device = variant.get("device", "cuda")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     log_to_wandb = variant.get("log_to_wandb", False)
 
     env_name, dataset = variant["env"], variant["dataset"]

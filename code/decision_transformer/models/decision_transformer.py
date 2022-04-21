@@ -33,6 +33,7 @@ class DecisionTransformer(TrajectoryModel):
         **kwargs
     ):
         super().__init__(state_dim, act_dim, max_length=max_length)
+        torch.manual_seed(args["seed"])
 
         self.hidden_size = hidden_size
         # note: the only difference between this GPT2Model and the default Huggingface version
@@ -54,14 +55,14 @@ class DecisionTransformer(TrajectoryModel):
                         X=self.transformer.wte.weight.data,
                         num_clusters=args["gpt_kmeans"],
                         distance="cosine",
-                        device=args.get("device", "cuda"),
+                        device=torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu'),  # device=args.get("device", "cuda")
                     )
                     if args["kmeans_cache"] is not None:
                         torch.save(self.cluster_centers, args["kmeans_cache"])
                 else:
                     self.cluster_centers = torch.load(args["kmeans_cache"])
                 self.cluster_centers = self.cluster_centers.to(
-                    args.get("device", "cuda")
+                    device=torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu'),  # device=args.get("device", "cuda")
                 )
                 # self.cluster_centers.requires_grad = True
             hidden_size = config.n_embd
