@@ -124,7 +124,8 @@ class DecisionTransformer(TrajectoryModel):
             self.predict_return = torch.nn.Linear(hidden_size, 1)
 
         self.past_key_values = None
-        print(self)
+
+        # print(self)  # これがあると標準出力にモデルが出てくる
 
     def forward(
         self,
