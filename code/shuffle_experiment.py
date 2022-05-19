@@ -321,7 +321,7 @@ def experiment(
         return fn
 
     if model_type == "dt":
-        model = DecisionTransformer(
+        model_pretrained = DecisionTransformer(
             args=variant,
             state_dim=state_dim,
             act_dim=act_dim,
@@ -338,10 +338,10 @@ def experiment(
         )
         if variant["load_checkpoint"]:
             state_dict = torch.load(variant["load_checkpoint"])
-            model.load_state_dict(state_dict)
+            model_pretrained.load_state_dict(state_dict)
             print(f"Loaded from {variant['load_checkpoint']}")
     elif model_type == "bc":
-        model = MLPBCModel(
+        model_pretrained = MLPBCModel(
             state_dim=state_dim,
             act_dim=act_dim,
             max_length=K,
@@ -350,17 +350,7 @@ def experiment(
         )
     else:
         raise NotImplementedError
-    
-    ln_1_w_list = []
-    ln_2_w_list = []
-    ln_1_b_list = []
-    ln_2_b_list = []
-    for i in range(12):
-        ln_1_w_list.append(model.transformer.h[i].ln_1.weight.data)
-        ln_2_w_list.append(model.transformer.h[i].ln_2.weight.data)
-        ln_1_b_list.append(model.transformer.h[i].ln_1.bias.data)
-        ln_2_b_list.append(model.transformer.h[i].ln_2.bias.data)
-    del model
+
     variant['pretrained_lm'] = False    
     model = DecisionTransformer(
             args=variant,
@@ -378,11 +368,8 @@ def experiment(
             attn_pdrop=0.1,
         )
     for i in range(12):
-        model.transformer.h[i].ln_1.weight.data = ln_1_w_list[i]
-        model.transformer.h[i].ln_2.weight.data = ln_2_w_list[i]
-        model.transformer.h[i].ln_1.bias.data = ln_1_b_list[i]
-        model.transformer.h[i].ln_2.bias.data = ln_2_b_list[i]
-
+        if i == variant["pretrained_block"]:
+            model.transformer.h[i] = model_pretrained.transformer.h[i]
     
     model = model.to(device=device)
 
@@ -487,6 +474,7 @@ if __name__ == "__main__":
     parser.add_argument("--kmeans_mean", action="store_true", default=False)
 
     parser.add_argument("--early_stopping", "-es", action="store_true", default=False)
+    parser.add_argument("--pretrained_block", type=int, default=0)
     args = parser.parse_args()
 
     experiment("gym-experiment", variant=vars(args))
