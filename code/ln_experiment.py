@@ -350,7 +350,40 @@ def experiment(
         )
     else:
         raise NotImplementedError
+    
+    ln_1_w_list = []
+    ln_2_w_list = []
+    ln_1_b_list = []
+    ln_2_b_list = []
+    for i in range(12):
+        ln_1_w_list.append(model.transformer.h[i].ln_1.weight.data)
+        ln_2_w_list.append(model.transformer.h[i].ln_2.weight.data)
+        ln_1_b_list.append(model.transformer.h[i].ln_1.bias.data)
+        ln_2_b_list.append(model.transformer.h[i].ln_2.bias.data)
+    del model
+    variant['pretrained_lm'] = False    
+    model = DecisionTransformer(
+            args=variant,
+            state_dim=state_dim,
+            act_dim=act_dim,
+            max_length=K,
+            max_ep_len=max_ep_len,
+            hidden_size=variant["embed_dim"],
+            n_layer=variant["n_layer"],
+            n_head=variant["n_head"],
+            n_inner=4 * variant["embed_dim"],
+            activation_function=variant["activation_function"],
+            n_positions=1024,
+            resid_pdrop=variant["dropout"],
+            attn_pdrop=0.1,
+        )
+    for i in range(12):
+        model.transformer.h[i].ln_1.weight.data = ln_1_w_list[i]
+        model.transformer.h[i].ln_2.weight.data = ln_2_w_list[i]
+        model.transformer.h[i].ln_1.bias.data = ln_1_b_list[i]
+        model.transformer.h[i].ln_2.bias.data = ln_2_b_list[i]
 
+    
     model = model.to(device=device)
 
     warmup_steps = variant["warmup_steps"]

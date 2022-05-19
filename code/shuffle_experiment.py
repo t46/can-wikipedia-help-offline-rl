@@ -321,7 +321,7 @@ def experiment(
         return fn
 
     if model_type == "dt":
-        model = DecisionTransformer(
+        model_pretrained = DecisionTransformer(
             args=variant,
             state_dim=state_dim,
             act_dim=act_dim,
@@ -338,10 +338,10 @@ def experiment(
         )
         if variant["load_checkpoint"]:
             state_dict = torch.load(variant["load_checkpoint"])
-            model.load_state_dict(state_dict)
+            model_pretrained.load_state_dict(state_dict)
             print(f"Loaded from {variant['load_checkpoint']}")
     elif model_type == "bc":
-        model = MLPBCModel(
+        model_pretrained = MLPBCModel(
             state_dim=state_dim,
             act_dim=act_dim,
             max_length=K,
@@ -351,6 +351,26 @@ def experiment(
     else:
         raise NotImplementedError
 
+    variant['pretrained_lm'] = False    
+    model = DecisionTransformer(
+            args=variant,
+            state_dim=state_dim,
+            act_dim=act_dim,
+            max_length=K,
+            max_ep_len=max_ep_len,
+            hidden_size=variant["embed_dim"],
+            n_layer=variant["n_layer"],
+            n_head=variant["n_head"],
+            n_inner=4 * variant["embed_dim"],
+            activation_function=variant["activation_function"],
+            n_positions=1024,
+            resid_pdrop=variant["dropout"],
+            attn_pdrop=0.1,
+        )
+    for i in range(12):
+        if i == variant["pretrained_block"]:
+            model.transformer.h[i] = model_pretrained.transformer.h[i]
+    
     model = model.to(device=device)
 
     warmup_steps = variant["warmup_steps"]
@@ -454,6 +474,7 @@ if __name__ == "__main__":
     parser.add_argument("--kmeans_mean", action="store_true", default=False)
 
     parser.add_argument("--early_stopping", "-es", action="store_true", default=False)
+    parser.add_argument("--pretrained_block", type=int, default=0)
     args = parser.parse_args()
 
     experiment("gym-experiment", variant=vars(args))
