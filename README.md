@@ -26,6 +26,8 @@ For output the results of Section 5.5 and 5.6.2 (context K=1), just add `--K 1` 
 python block_replacement_experiment.py --env hopper --dataset medium --model_type dt --seed 666 --outdir "checkpoints/block1_dt_medium_hopper_666_K1" --dropout 0.2 --share_input_output_proj --warmup_steps 5000 --embed_dim 768 --n_layer 12 -w --pretrained_lm gpt2 --K 1 --pretrained_block 1 --max_iters 10
 ```
 
+Although other options are in `experiment.py`, we do not use these options.
+
 ## Analysis
 ### 5.1 Similarity Analysis
 The notebooks for activation similarity analisis are in `notebooks/section-51-activation-similarity`.
