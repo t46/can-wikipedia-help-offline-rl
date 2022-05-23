@@ -15,7 +15,7 @@ def discount_cumsum(x, gamma):
         discount_cumsum[t] = x[t] + gamma * discount_cumsum[t + 1]
     return discount_cumsum
 
-def prepare_data(variant):
+def get_data_info(variant):
     env_name, dataset = variant["env"], variant["dataset"]
     model_type = variant["model_type"]
     exp_prefix = 'gym-experiment'
@@ -55,6 +55,11 @@ def prepare_data(variant):
     state_dim = env.observation_space.shape[0]
     act_dim = env.action_space.shape[0]
 
+    return state_dim, act_dim, max_ep_len, scale
+
+
+def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device):
+    env_name, dataset, max_len, batch_size = variant["env"], variant["dataset"], variant["K"], variant["batch_size"]
     # load dataset
     dataset_path = f"../../data/{env_name}-{dataset}-v2.pkl"
     with open(dataset_path, "rb") as f:
@@ -101,25 +106,8 @@ def prepare_data(variant):
 
     # used to reweight sampling so we sample according to timesteps instead of trajectories
     p_sample = traj_lens[sorted_inds] / sum(traj_lens[sorted_inds])
-    
-    return trajectories, sorted_inds, state_dim, act_dim, max_ep_len, state_mean, state_std, num_trajectories, p_sample, scale
 
-
-def get_batch(
-    batch_size, 
-    max_len,
-    trajectories,
-    sorted_inds,
-    state_dim,
-    act_dim,
-    max_ep_len,
-    state_mean,
-    state_std,
-    num_trajectories,
-    p_sample,
-    scale,
-    device
-    ):
+    # prepare for sampling batch
     batch_inds = np.random.choice(
         np.arange(num_trajectories),
         size=batch_size,
