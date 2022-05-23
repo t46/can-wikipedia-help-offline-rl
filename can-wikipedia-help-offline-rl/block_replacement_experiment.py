@@ -1,3 +1,6 @@
+"""
+Run block replacement experiments.
+"""
 import gym
 import numpy as np
 import torch
@@ -19,76 +22,6 @@ from decision_transformer.training.seq_trainer import SequenceTrainer
 
 from utils import get_optimizer
 import os
-
-class ConvergenceJudge(object):
-    def __init__(self, threshold=1e-2, patience=10):
-        self.threshold = threshold
-        self.metrics_pre = None
-        self.num_stacked_epocs = 0
-        self.patience = patience
-    
-    def step(self, metrics):
-        if self.metrics_pre == None:
-            self.metrics_pre = metrics
-            return False
-        else:
-            if abs(metrics - self.metrics_pre) < self.threshold:
-                self.num_stacked_epochs += 1
-            else:
-                self.num_stacked_epocs = 0
-            if self.num_stacked_epochs >= self.patience:
-                return True
-            return False
-
-class EarlyStopping(object):
-    def __init__(self, mode='min', min_delta=0, patience=10, percentage=False):
-        self.mode = mode
-        self.min_delta = min_delta
-        self.patience = patience
-        self.best = None
-        self.num_bad_epochs = 0
-        self.is_better = None
-        self._init_is_better(mode, min_delta, percentage)
-
-        if patience == 0:
-            self.is_better = lambda a, b: True
-            self.step = lambda a: False
-
-    def step(self, metrics):
-        if self.best is None:
-            self.best = metrics
-            return False
-
-        if np.isnan(metrics):
-            return True
-
-        if self.is_better(metrics, self.best):
-            self.num_bad_epochs = 0
-            self.best = metrics
-        else:
-            self.num_bad_epochs += 1
-
-        if self.num_bad_epochs >= self.patience:
-            print('terminating because of early stopping!')
-            return True
-
-        return False
-
-    def _init_is_better(self, mode, min_delta, percentage):
-        if mode not in {'min', 'max'}:
-            raise ValueError('mode ' + mode + ' is unknown!')
-        if not percentage:
-            if mode == 'min':
-                self.is_better = lambda a, best: a < best - min_delta
-            if mode == 'max':
-                self.is_better = lambda a, best: a > best + min_delta
-        else:
-            if mode == 'min':
-                self.is_better = lambda a, best: a < best - (
-                            best * min_delta / 100)
-            if mode == 'max':
-                self.is_better = lambda a, best: a > best + (
-                            best * min_delta / 100)
 
 def discount_cumsum(x, gamma):
     discount_cumsum = np.zeros_like(x)
@@ -409,8 +342,6 @@ def experiment(
             project="decision-transformer",
             config=variant,
         )
-    if early_stopping:    # wandb.watch(model)  # wandb has some bug
-        convergence_judge = ConvergenceJudge(threshold=1e-2, patience=3)
 
     for iter in range(variant["max_iters"]):
         print("HI!")
@@ -420,9 +351,6 @@ def experiment(
         print("HI2!")
         if log_to_wandb:
             wandb.log(outputs)
-        if early_stopping:
-            if convergence_judge(outputs):
-                break
 
 
 if __name__ == "__main__":
@@ -473,7 +401,6 @@ if __name__ == "__main__":
     parser.add_argument("--share_input_output_proj", action="store_true", default=False)
     parser.add_argument("--kmeans_mean", action="store_true", default=False)
 
-    parser.add_argument("--early_stopping", "-es", action="store_true", default=False)
     parser.add_argument("--pretrained_block", type=int, default=0)
     args = parser.parse_args()
 
