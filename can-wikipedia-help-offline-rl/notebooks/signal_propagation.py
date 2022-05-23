@@ -1,3 +1,7 @@
+"""
+Functions to get activation or gradients.
+"""
+
 import torch
 from tqdm._tqdm_notebook import tqdm
 
@@ -6,6 +10,23 @@ sys.path.append('../../')
 from decision_transformer.models.decision_transformer import DecisionTransformer
 
 def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask):
+    """Get activation of a model.
+
+    Args:
+        variant (dict): arguments.
+        state_dim (int): dimension of state.
+        act_dim (int): dimension of action.
+        max_ep_len (int): context length K.
+        states (torch.Tensor): a batch of states.
+        actions (torch.Tensor): a batch of actions.
+        rewards (torch.Tensor): a batch of rewards.
+        rtg (torch.Tensor): a batch of return-to-go.
+        timesteps (torch.Tensor): a batch of timesteps.
+        attention_mask (torch.Tensor): Mask for causal Transformer.
+
+    Returns:
+        dict: {layer_name: activation, ...}
+    """    
     torch.manual_seed(0)
     model = DecisionTransformer(
         args=variant,
@@ -81,6 +102,23 @@ def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rew
     return activation_sorted
 
 def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask):
+    """Get gradients of a model.
+
+    Args:
+        variant (dict): arguments.
+        state_dim (int): dimension of state.
+        act_dim (int): dimension of action.
+        max_ep_len (int): context length K.
+        states (torch.Tensor): a batch of states.
+        actions (torch.Tensor): a batch of actions.
+        rewards (torch.Tensor): a batch of rewards.
+        rtg (torch.Tensor): a batch of return-to-go.
+        timesteps (torch.Tensor): a batch of timesteps.
+        attention_mask (torch.Tensor): Mask for causal Transformer.
+
+    Returns:
+        list: gradients of different samples.
+    """    
 
     loss_fn = lambda s_hat, a_hat, r_hat, s, a, r: torch.mean((a_hat - a) ** 2)
 
@@ -150,6 +188,23 @@ def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewa
 
 
 def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask):
+    """Get gradients of a model.
+
+    Args:
+        variant (dict): arguments.
+        state_dim (int): dimension of state.
+        act_dim (int): dimension of action.
+        max_ep_len (int): context length K.
+        states (torch.Tensor): a batch of states.
+        actions (torch.Tensor): a batch of actions.
+        rewards (torch.Tensor): a batch of rewards.
+        rtg (torch.Tensor): a batch of return-to-go.
+        timesteps (torch.Tensor): a batch of timesteps.
+        attention_mask (torch.Tensor): Mask for causal Transformer.
+
+    Returns:
+        tuple(list, dict): (gradients of different samples, gradient norm per parameter({parameter_name: gradient_norm})
+    """    
 
     loss_fn = lambda s_hat, a_hat, r_hat, s, a, r: torch.mean((a_hat - a) ** 2)
 
