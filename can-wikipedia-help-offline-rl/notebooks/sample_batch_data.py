@@ -9,6 +9,15 @@ np.random.seed(0)
 torch.manual_seed(0)
 
 def discount_cumsum(x, gamma):
+    """Discount cumulative summation.
+
+    Args:
+        x (np.ndarray): array-like.
+        gamma (float): discount factor.
+
+    Returns:
+        np.ndarray: discounted cumulative summation.
+    """    
     discount_cumsum = np.zeros_like(x)
     discount_cumsum[-1] = x[-1]
     for t in reversed(range(x.shape[0] - 1)):
@@ -16,6 +25,17 @@ def discount_cumsum(x, gamma):
     return discount_cumsum
 
 def get_data_info(variant):
+    """Get basic data property.
+
+    Args:
+        variant (dict): args.
+
+    Raises:
+        NotImplementedError: variant["env"] should be either hopper, halfcheetah, or walker2d.
+
+    Returns:
+        tuple[int, int, int, float]: state dimension, action dimension, max episode length, normalizing factor for return.
+    """    
     env_name, dataset = variant["env"], variant["dataset"]
     model_type = variant["model_type"]
     exp_prefix = 'gym-experiment'
@@ -59,6 +79,22 @@ def get_data_info(variant):
 
 
 def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device):
+    """Get a batch of data.
+
+    Args:
+        variant (dict): args.
+        state_dim (int): state dimension.
+        act_dim (int): action dimension.
+        max_ep_len (int): maximum episode length.
+        scale (float): normalizing return.
+        device (str): cpu/gpu.
+
+    Returns:
+        tuple[torch.Tensor, torch.Tensor,
+              torch.Tensor, torch.Tensor, 
+              torch.Tensor, torch.Tensor, 
+              torch.Tensor]: states, actions, rewards, dones, return-to-gos, timesteps, attention masks.
+    """    
     env_name, dataset, max_len, batch_size = variant["env"], variant["dataset"], variant["K"], variant["batch_size"]
     # load dataset
     dataset_path = f"../../data/{env_name}-{dataset}-v2.pkl"
