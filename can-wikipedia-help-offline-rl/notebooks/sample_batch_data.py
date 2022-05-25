@@ -1,3 +1,7 @@
+"""
+Functions to get batch of samples.
+Based on this code https://github.com/machelreid/can-wikipedia-help-offline-rl/blob/main/code/experiment.py
+"""
 import numpy as np
 import random
 import gym
