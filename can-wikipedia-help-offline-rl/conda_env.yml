@@ -1,13 +1,15 @@
 name: wikirl-gym
 channels:
-- pytorch
+- conda-forge
 dependencies:
-- python=3.8
-  #- anaconda
-  #- cudatoolkit=10.
-- numpy==1.20.3
-- gym==0.18.3
-- mujoco-py==2.1.2.14
-- torch==1.9
-- transformers==4.12.5
-- wandb==0.9.1
+- python=3.8.10
+- pip
+- pip:
+  - gym==0.18.3
+  - mujoco-py==2.1.2.14
+  - numpy==1.20.3
+  - torch==1.11.0
+  - transformers==4.12.0
+  - wandb==0.12.17
+  - kmeans-pytorch==0.3
+  - torch-semiring-einsum==1.0.0
