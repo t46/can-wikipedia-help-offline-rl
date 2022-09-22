@@ -1,8 +1,0 @@
-checkpoints
-wandb
-data
-.bash_history
-.cache/
-.python_history
-.vim/
-.viminfo

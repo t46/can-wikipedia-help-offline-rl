@@ -1,0 +1,10 @@
+checkpoints
+wandb
+data
+.bash_history
+.cache/
+.python_history
+.vim/
+.viminfo
+notebooks/**/**results**
+notebooks/**/**figs**
