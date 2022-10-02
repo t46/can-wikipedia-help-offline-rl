@@ -45,9 +45,9 @@ def main():
 
         data = np.load(f'/root/projects/can-wikipedia-help-offline-rl/code/notebooks/data/data_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
 
-        rtg = data['rtg'][:, :-1].to(device)
-        states = data['states'].to(device)
-        actions = data['actions'].to(device)
+        rtg = data['rtg'][:, :-1].to(device)  # (batch_size, K, dim)
+        states = data['states'].to(device)  # (batch_size, K, dim)
+        actions = data['actions'].to(device)  # (batch_size, K, dim)
 
         mi_state_action_list = []
         mi_rtg_action_list = []
