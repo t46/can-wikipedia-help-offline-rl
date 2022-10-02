@@ -7,12 +7,64 @@ Repository to replecate the results of *On the Effect of Pre-training for Transf
 - https://github.com/gtegner/mine-pytorch
 - https://github.com/google-research/google-research/tree/master/representation_similarity
 
-## Preparation
-The setup for our experiments are the same as that of repositories our repository is based on. Thus, follow the instruction of the following repositories:
+The setup for our experiments are based on that of the following repositories:
 - https://github.com/machelreid/can-wikipedia-help-offline-rl
 - https://github.com/gtegner/mine-pytorch
 
 Our experiment and analysis are mainly done in `can-wikipedia-help-offline-rl` subdirectory. Thus, if we do not specify which directory we are in below, it assumes that we are in `can-wikipedia-help-offline-rl`. The directory `mine-pytorch` is only used for mutual information estimation.
+
+We provide conda environments `mine` for mutual information calculation  by MINE in `mine-pytorch` and `wikirl-gym` for the others in `can-wikipedia-help-offline-rl`.
+
+## Setup for `can-wikipedia-help-offline-rl`
+
+### Install MuJoCo
+D4RL depends on `mujoco-py` which requires `mujoco210`. Thus, install `mujoco210` following the instruction of [the repository](https://github.com/openai/mujoco-py). We excerpted the instruction from the repository below:
+> Download the MuJoCo version 2.1 binaries for [Linux](https://mujoco.org/download/mujoco210-linux-x86_64.tar.gz) or [OSX](https://mujoco.org/download/mujoco210-macos-x86_64.tar.gz).
+>
+> Extract the downloaded `mujoco210` directory into `~/.mujoco/mujoco210`.
+>
+> If you want to specify a nonstandard location for the package, use the env variable `MUJOCO_PY_MUJOCO_PATH`.
+
+### Create and activate `wikirl-gym` environment
+
+```
+cd can-wikipedia-help-offline-rl
+conda env create -f conda_env.yml
+conda activate wikirl-gym
+```
+
+### Install D4RL
+```
+cd data
+git clone https://github.com/rail-berkeley/d4rl.git
+cd d4rl
+```
+Edit `setupy.py` to use D4RL with mujoco 2.1.0 (D4RL currently depends on `dm-control` which requires `mujoco-2.1.1` and `mujoco-py` which requires `mujoco210`. See [reference](https://github.com/Farama-Foundation/D4RL/issues/144).). Specifically, change `'dm_control>=1.0.3'` in `setupy.py` to `'dm_control @ git+https://github.com/deepmind/dm_control@644d9e0047f68b35a6f8b79e5e8493e2910563af'`.
+
+After that, run the following:
+```
+pip install -e .
+```
+
+### Download data of D4RL
+```
+python download_d4rl_datasets.py
+```
+
+### Activate Wandb
+```
+wandb login
+```
+
+## Setup for `mine-pytorch`
+### Create and activate `mine` environment
+```
+cd mine-pytorch
+conda env create -f conda_env.yml
+conda activate mine
+```
+
+
 ## Run Fine-Tuning
 
 We run the following command to fine-tune the *randomly initialized model* used in Section 5.1 - 5.4 (context K=20). 
