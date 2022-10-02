@@ -380,6 +380,8 @@ if __name__ == "__main__":
     parser.add_argument("--share_input_output_proj", action="store_true", default=False)
     parser.add_argument("--kmeans_mean", action="store_true", default=False)
 
+    parser.add_argument("--remove_grad_clip", action="store_true", default=False)
+
     args = parser.parse_args()
 
     experiment("gym-experiment", variant=vars(args))

@@ -80,7 +80,8 @@ class SequenceTrainer(Trainer):
 
         self.optimizer.zero_grad()
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 0.25)
+        if not self.args["remove_grad_clip"]:
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), 0.25)
         self.optimizer.step()
 
         with torch.no_grad():
