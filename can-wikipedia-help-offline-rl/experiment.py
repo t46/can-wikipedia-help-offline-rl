@@ -41,7 +41,6 @@ def experiment(
     # device = variant.get("device", "cuda")
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     log_to_wandb = variant.get("log_to_wandb", False)
-    early_stopping = variant.get("early_stopping", False)
 
     env_name, dataset = variant["env"], variant["dataset"]
     model_type = variant["model_type"]
@@ -115,7 +114,6 @@ def experiment(
     batch_size = variant["batch_size"]
     num_eval_episodes = variant["num_eval_episodes"]
     pct_traj = variant.get("pct_traj", 1.0)
-    early_stopping = variant.get("early_stopping", False)
 
     # only train on top pct_traj trajectories (for %BC experiment)
     num_timesteps = max(int(pct_traj * num_timesteps), 1)
@@ -382,7 +380,8 @@ if __name__ == "__main__":
     parser.add_argument("--share_input_output_proj", action="store_true", default=False)
     parser.add_argument("--kmeans_mean", action="store_true", default=False)
 
-    parser.add_argument("--early_stopping", "-es", action="store_true", default=False)
+    parser.add_argument("--remove_grad_clip", action="store_true", default=False)
+
     args = parser.parse_args()
 
     experiment("gym-experiment", variant=vars(args))

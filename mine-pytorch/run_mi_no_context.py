@@ -41,13 +41,14 @@ def main():
     seed = 666
     epoch = 40
     model_name = 'gpt2'
+    batch_size = 100
 
-    data = np.load(f'/root/projects/can-wikipedia-help-offline-rl/code/notebooks/data/data_{env_name}_{dataset_name}_{seed}.npy', allow_pickle=True).item()
-    activation = np.load(f'/root/projects/can-wikipedia-help-offline-rl/code/notebooks/results/activation_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}.npy', allow_pickle=True).item()
+    data = np.load(f'/root/projects/can-wikipedia-help-offline-rl/code/notebooks/data/data_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
+    activation = np.load(f'/root/projects/can-wikipedia-help-offline-rl/code/notebooks/results/activation_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
 
-    rtg = data['rtg'][:, :-1].to(device)  #(batch_size, K, dim)
-    states = data['states'].to(device)  #(batch_size, K, dim)
-    actions = data['actions'].to(device)  #(batch_size, K, dim)
+    rtg = data['rtg'][:, :-1].to(device)  # (batch_size, K, dim)
+    states = data['states'].to(device)  # (batch_size, K, dim)
+    actions = data['actions'].to(device)  # (batch_size, K, dim)
 
     mi_dict = {}
 
