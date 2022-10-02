@@ -125,6 +125,34 @@ The notebook for activation plot the results of fine-tuning with no context is i
 The notebook for attention distance analisis is in `notebooks/section-56-dependence-on-context`.
 - `attention_distance.ipynb`
   - Plot Figure 11.
+## Analysis done during rebuttal period
+The following two analyses are done during rebuttal period, the result of which are in Appendix.
+
+### G.3 Analysis of the Effect of Gradient Clipping
+Run the experiment with `--remove-grad-clip` option.
+```{sh}
+python experiment.py --env hopper --dataset medium --model_type igpt --seed 666 --outdir "checkpoints/igpt_medium_hopper_666_no_grd_clip" --dropout 0.2 --share_input_output_proj --warmup_steps 5000 -w
+```
+After that, plot the figure in the jupyter notebook. The notebook for activation similarity analisis is in `notebooks/section-54-gradient-analysis`.
+- `plot_learning_curve_grad_clip.ipynb`
+  - Plot Figures 19 and 20.
+
+### H.2 Analysis of Why Randomly Initialized Model Fails for Hopper with No Context
+The notebook for comparing mutual information of different data type is in `notebooks/section-52-mutual-information`.
+
+- `mutual_information_data.ipynb`
+  - Plot Figure 22.
+
+1. run the code below
+    ```
+    cd ../mine-pytorch
+    conda activate mine
+    python run_mi_data.py
+    conda deactivate mine
+    cd ../can-wikipedia-help-offline-rl
+    ```
+2. run `mutual_information_data.ipynb`
+
 ## License
 
 MIT
