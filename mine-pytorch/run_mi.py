@@ -54,7 +54,7 @@ def main():
     else:
         keys = ['6.mlp.dropout']
 
-    for key in keys:
+    for key in tqdm(keys):
 
         mi_dict = {}
 

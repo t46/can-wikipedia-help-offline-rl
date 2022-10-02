@@ -16,7 +16,7 @@ from mine.models.layers import ConcatLayer, CustomSequential
 
 import pytorch_lightning as pl
 from pytorch_lightning import Trainer
-import mine.utils
+from mine.utils.helpers import batch
 
 torch.autograd.set_detect_anomaly(True)
 
@@ -111,7 +111,7 @@ class Mine(nn.Module):
 
         for iter in range(1, iters + 1):
             mu_mi = 0
-            for x, y in utils.batch(X, Y, batch_size):
+            for x, y in batch(X, Y, batch_size):
                 opt.zero_grad()
                 loss = self.forward(x, y)
                 loss.backward()
