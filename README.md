@@ -100,10 +100,13 @@ The steps for mutual information estimation are following:
 2. run the code below
     ```
     cd ../mine-pytorch
-    python run_mi.py
+    python run_mi_exp.py --path_to_save_mi YOUR_SAVE_PATH --path_to_data YOUR_DATA_PATH --path_to_activation YOUR_ACTIVATION_PATH
     cd ../can-wikipedia-help-offline-rl
     ```
-    For the result of Appendix E.3, run `run_mi_no_context.py` instead of `run_mi.py`.
+    For the result of Appendix E.3, run the following:
+    ```
+    python run_mi_exp.py --path_to_save_mi YOUR_SAVE_PATH --path_to_data YOUR_DATA_PATH --path_to_activation YOUR_ACTIVATION_PATH --exp_type no_context
+    ```
 3. run `mutual_information.ipynb`
 ### 5.3 Parameter Similarity
 The notebook for activation similarity analisis is in `notebooks/section-53-parameter-similarity`.
@@ -146,8 +149,8 @@ The notebook for comparing mutual information of different data type is in `note
 1. run the code below
     ```
     cd ../mine-pytorch
-    conda activate mine
-    python run_mi_data.py
+    conda activate minei
+    python run_mi_exp.py --path_to_save_mi YOUR_SAVE_PATH --path_to_data YOUR_DATA_PATH --path_to_activation YOUR_ACTIVATION_PATH --exp_type data 
     conda deactivate mine
     cd ../can-wikipedia-help-offline-rl
     ```

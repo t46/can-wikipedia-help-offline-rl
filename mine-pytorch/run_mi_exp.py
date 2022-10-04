@@ -76,10 +76,10 @@ def main(variant):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--exp_type", type=str)
     parser.add_argument("--path_to_save_mi", type=str)
     parser.add_argument("--path_to_data", type=str)
     parser.add_argument("--path_to_activation", type=str)
+    parser.add_argument("--exp_type", type=str, default="normal")
     parser.add_argument("--env_name", type=str, default="hopper")
     parser.add_argument("--dataset_name", type=str, default="medium")
     parser.add_argument("--seed", type=int, default=666)
