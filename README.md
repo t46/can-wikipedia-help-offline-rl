@@ -91,19 +91,22 @@ The notebooks for activation similarity analisis are in `notebooks/section-51-ac
 Code to run MINE is in `root/mine-pytorch` and notebooks for activation similarity analisis are in `notebooks/section-52-mutual-information`
 
 - `mutual_information.ipynb`
-  - Plot Figure 2 and 16 from estimated mutual information by `root/mine-pytorch/run_mi.py` or `root/mine-pytorch/run_mi_no_context.py`
+  - Plot Figure 2 and 16 from estimated mutual information by `root/mine-pytorch/run_mi_exp.py`.
 - `save_activation.ipynb`
-  - Save hidden representation to estimate mutual information in `root/mine-pytorch/run_mi.py` or `root/mine-pytorch/run_mi_no_context.py`.
+  - Save hidden representation to estimate mutual information in `root/mine-pytorch/run_mi_exp.py`.
 
 The steps for mutual information estimation are following:
-1. run `save_activation.ipynb` and save activation into the directory from which `run_mi.py` read activation.
+1. run `save_activation.ipynb` and save activation into the directory from which `run_mi_exp.py` read activation.
 2. run the code below
     ```
     cd ../mine-pytorch
-    python run_mi.py
+    python run_mi_exp.py --path_to_save_mi YOUR_SAVE_PATH --path_to_data YOUR_DATA_PATH --path_to_activation YOUR_ACTIVATION_PATH
     cd ../can-wikipedia-help-offline-rl
     ```
-    For the result of Appendix E.3, run `run_mi_no_context.py` instead of `run_mi.py`.
+    For the result of Appendix E.3, run the following:
+    ```
+    python run_mi_exp.py --path_to_save_mi YOUR_SAVE_PATH --path_to_data YOUR_DATA_PATH --path_to_activation YOUR_ACTIVATION_PATH --exp_type no_context
+    ```
 3. run `mutual_information.ipynb`
 ### 5.3 Parameter Similarity
 The notebook for activation similarity analisis is in `notebooks/section-53-parameter-similarity`.
@@ -143,11 +146,11 @@ The notebook for comparing mutual information of different data type is in `note
 - `mutual_information_data.ipynb`
   - Plot Figure 22.
 
-1. run the code below
+1. run the command below
     ```
     cd ../mine-pytorch
-    conda activate mine
-    python run_mi_data.py
+    conda activate minei
+    python run_mi_exp.py --path_to_save_mi YOUR_SAVE_PATH --path_to_data YOUR_DATA_PATH --path_to_activation YOUR_ACTIVATION_PATH --exp_type data 
     conda deactivate mine
     cd ../can-wikipedia-help-offline-rl
     ```
