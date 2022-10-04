@@ -82,7 +82,7 @@ def get_data_info(variant):
     return state_dim, act_dim, max_ep_len, scale
 
 
-def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device):
+def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_dataset):
     """Get a batch of data.
 
     Args:
@@ -92,6 +92,7 @@ def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device):
         max_ep_len (int): maximum episode length.
         scale (float): normalizing return.
         device (str): cpu/gpu.
+        path_to_dataset (str): path to dataset.
 
     Returns:
         tuple[torch.Tensor, torch.Tensor,
@@ -101,7 +102,7 @@ def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device):
     """    
     env_name, dataset, max_len, batch_size = variant["env"], variant["dataset"], variant["K"], variant["batch_size"]
     # load dataset
-    dataset_path = f"../../data/{env_name}-{dataset}-v2.pkl"
+    dataset_path = f"{path_to_dataset}/{env_name}-{dataset}-v2.pkl"
     with open(dataset_path, "rb") as f:
         trajectories = pickle.load(f)
 
