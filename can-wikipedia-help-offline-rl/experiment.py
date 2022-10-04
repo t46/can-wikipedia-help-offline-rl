@@ -35,8 +35,9 @@ def discount_cumsum(x, gamma):
 def experiment(
     exp_prefix,
     variant,
-):
-    torch.manual_seed(variant["seed"])
+):  
+    seed = variant["seed"]
+    torch.manual_seed(seed)
     os.makedirs(variant["outdir"], exist_ok=True)
     # device = variant.get("device", "cuda")
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -44,8 +45,13 @@ def experiment(
 
     env_name, dataset = variant["env"], variant["dataset"]
     model_type = variant["model_type"]
+    K = variant["K"]
     group_name = f"{exp_prefix}-{env_name}-{dataset}"
-    exp_prefix = f"{group_name}-{random.randint(int(1e5), int(1e6) - 1)}"
+    exp_name = f"{group_name}-{model_type}-{seed}"
+    if K != 20:
+        exp_name += f'-K{K}'
+    if variant["remove_grad_clip"]:
+        exp_name += '-no-grad-clip'
 
     if env_name == "hopper":
         env = gym.make("Hopper-v3")
@@ -110,7 +116,6 @@ def experiment(
     print(f"Max return: {np.max(returns):.2f}, min: {np.min(returns):.2f}")
     print("=" * 50)
 
-    K = variant["K"]
     batch_size = variant["batch_size"]
     num_eval_episodes = variant["num_eval_episodes"]
     pct_traj = variant.get("pct_traj", 1.0)
@@ -316,7 +321,7 @@ def experiment(
 
     if log_to_wandb:
         wandb.init(
-            name=exp_prefix,
+            name=exp_name,
             group=group_name,
             project="decision-transformer",
             config=variant,
