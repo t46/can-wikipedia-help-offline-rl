@@ -42,9 +42,17 @@ def main():
     epoch = 40
     model_name = 'gpt2'
     batch_size = 100
+    path_to_save_mi = 'path_to_save_mi'
+    '''
+    Followings are the paths to data and activation saved by 
+    .../can-wikipdia-help-offline-rl/notebooks/section-52-mutual-information/save_activation.ipynb.
+    So refer to the notebook for the path.
+    '''
+    path_to_d4rl_data_sample = 'path_to_d4rl_data_sample'
+    path_to_activation = 'path_to_activation'
 
-    data = np.load(f'/root/projects/can-wikipedia-help-offline-rl/code/notebooks/data/data_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
-    activation = np.load(f'/root/projects/can-wikipedia-help-offline-rl/code/notebooks/results/activation_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
+    data = np.load(f'{path_to_d4rl_data_sample}/data_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
+    activation = np.load(f'{path_to_activation}/activation_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
 
     rtg = data['rtg'][:, :-1].to(device)  # (batch_size, K, dim)
     states = data['states'].to(device)  # (batch_size, K, dim)
@@ -74,7 +82,7 @@ def main():
             mi_dict[key].append(state_mi_list)
             mi_dict[key].append(action_mi_list)
 
-    np.save(f'results/mi_{epoch}_{model_name}_{env_name}_{dataset_name}_666.npy', mi_dict)
+    np.save(f'{path_to_save_mi}/mi_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}.npy', mi_dict)
 
 if __name__ == '__main__':
     main()

@@ -40,10 +40,17 @@ def main():
     dataset_name = 'medium'
     seed = 666
     batch_size = 100
+    path_to_save_mi = 'path_to_save_mi'
+    '''
+    The following is the path to data saved by 
+    .../can-wikipdia-help-offline-rl/notebooks/section-52-mutual-information/save_activation.ipynb.
+    So refer to the notebook for the path.
+    '''
+    path_to_d4rl_data_sample = 'path_to_d4rl_data_sample'
 
     for env_name in env_names:
 
-        data = np.load(f'/root/projects/can-wikipedia-help-offline-rl/code/notebooks/data/data_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
+        data = np.load(f'{path_to_d4rl_data_sample}/data_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
 
         rtg = data['rtg'][:, :-1].to(device)  # (batch_size, K, dim)
         states = data['states'].to(device)  # (batch_size, K, dim)
@@ -61,8 +68,8 @@ def main():
             mi_state_action_list.append(mi_state_action)
             mi_rtg_action_list.append(mi_rtg_action)
 
-        np.save(f'results/mi_data_state_action_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_state_action_list)
-        np.save(f'results/mi_data_rtg_action_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_rtg_action_list)
+        np.save(f'{path_to_save_mi}/mi_data_state_action_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_state_action_list)
+        np.save(f'{path_to_save_mi}/mi_data_rtg_action_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_rtg_action_list)
 
 
 if __name__ == '__main__':
