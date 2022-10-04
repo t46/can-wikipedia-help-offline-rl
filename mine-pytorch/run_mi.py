@@ -100,7 +100,7 @@ def main():
         mi_dict[key].append(x_mi_list)
         mi_dict[key].append(y_mi_list)
 
-        np.save(f'{path_to_save_mi}/mi_xy_{key}_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}.npy', mi_dict)
+        np.save(f'{path_to_save_mi}/mi_xy_{key}_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_dict)
 
 if __name__ == '__main__':
     main()
