@@ -91,12 +91,12 @@ The notebooks for activation similarity analisis are in `notebooks/section-51-ac
 Code to run MINE is in `root/mine-pytorch` and notebooks for activation similarity analisis are in `notebooks/section-52-mutual-information`
 
 - `mutual_information.ipynb`
-  - Plot Figure 2 and 16 from estimated mutual information by `root/mine-pytorch/run_mi.py` or `root/mine-pytorch/run_mi_no_context.py`
+  - Plot Figure 2 and 16 from estimated mutual information by `root/mine-pytorch/run_mi_exp.py`.
 - `save_activation.ipynb`
-  - Save hidden representation to estimate mutual information in `root/mine-pytorch/run_mi.py` or `root/mine-pytorch/run_mi_no_context.py`.
+  - Save hidden representation to estimate mutual information in `root/mine-pytorch/run_mi_exp.py`.
 
 The steps for mutual information estimation are following:
-1. run `save_activation.ipynb` and save activation into the directory from which `run_mi.py` read activation.
+1. run `save_activation.ipynb` and save activation into the directory from which `run_mi_exp.py` read activation.
 2. run the code below
     ```
     cd ../mine-pytorch
@@ -146,7 +146,7 @@ The notebook for comparing mutual information of different data type is in `note
 - `mutual_information_data.ipynb`
   - Plot Figure 22.
 
-1. run the code below
+1. run the command below
     ```
     cd ../mine-pytorch
     conda activate minei
