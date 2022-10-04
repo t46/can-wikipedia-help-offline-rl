@@ -1,7 +1,8 @@
 import argparse
 import numpy as np
 from tqdm import tqdm
-from util_mi_calculation import calc_mi, load_data_and_activation
+from util_mi_calculation import load_data_and_activation
+from util_to_save_mi import run_to_save_mi, run_to_save_mi_no_context, run_to_save_mi_data
 
 
 device = 'cuda'
@@ -17,6 +18,7 @@ def main(variant):
     path_to_save_mi = variant['path_to_save_mi']
     path_to_d4rl_data_sample = variant['path_to_data']
     path_to_activation = variant['path_to_activation']
+    exp_type = variant['exp_type']
 
     rtg, states, actions, activations = load_data_and_activation(path_to_d4rl_data_sample,
                                                                  path_to_activation,
@@ -28,53 +30,53 @@ def main(variant):
                                                                  model_name,
                                                                  device
                                                                 )
-
-    if model_name == 'igpt':
-        keys = ['0.mlp.dropout', '12.mlp.dropout', '23.mlp.dropout']
+    if exp_type == 'normal':
+        run_to_save_mi(
+            path_to_save_mi,
+            env_name,
+            dataset_name,
+            seed,
+            batch_size,
+            epoch,
+            model_name,
+            device,
+            rtg,
+            states,
+            actions,
+            activations
+        )
+    elif exp_type == 'no_context':
+        run_to_save_mi_no_context(
+            path_to_save_mi,
+            env_name,
+            dataset_name,
+            seed,
+            batch_size,
+            epoch,
+            model_name,
+            device,
+            states,
+            actions,
+            activations
+        )
+    elif exp_type == 'data':
+        run_to_save_mi_data(
+            path_to_save_mi,
+            env_name,
+            dataset_name,
+            seed,
+            batch_size,
+            device,
+            rtg,
+            states,
+            actions
+        )
     else:
-        keys = ['6.mlp.dropout']
-
-    for key in tqdm(keys):
-
-        mi_dict = {}
-
-        value = activations[key]
-        activation = value.to(device)
-
-        mi_dict[key] = []
-        x_mi_list = []
-        y_mi_list = []
-        for step in tqdm(range(states.shape[1])):
-            for i in range(3):
-                if (step == states.shape[1] - 1) and i == 2:  # Exclude action of K=1
-                    pass
-                else:
-                    if i == 0:
-                        rsa = rtg
-                    elif i == 1:
-                        rsa = states
-                    else:
-                        rsa = actions
-
-                    try:
-                        x_mi = calc_mi(rsa[:, step, :], activation[:, -2, :], device).cpu().numpy()  # I(X; T)
-                    except:
-                        x_mi = np.nan
-                        print(f'{key}: x_mi is None')
-                    try:
-                        y_mi = calc_mi(actions[:, -1, :], activation[:, (3 * step + i), :], device).cpu().numpy()  # I(Y; T)
-                    except:
-                        y_mi = np.nan
-                        print(f'{key}: y_mi is None')
-                    x_mi_list.append(x_mi)
-                    y_mi_list.append(y_mi)
-        mi_dict[key].append(x_mi_list)
-        mi_dict[key].append(y_mi_list)
-
-        np.save(f'{path_to_save_mi}/mi_xy_{key}_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_dict)
+        print('No such option')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument("--exp_type", type=str)
     parser.add_argument("--path_to_save_mi", type=str)
     parser.add_argument("--path_to_data", type=str)
     parser.add_argument("--path_to_activation", type=str)
