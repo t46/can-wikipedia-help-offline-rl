@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import sys
+import argparse
 
 sys.path.append('../')
 from sample_batch_data import get_data_info, get_batch
@@ -90,15 +91,15 @@ def save_data_and_activation(
         np.save(f'{path_to_save_d4rl_data_sample}/data_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', data)
 
 
-def main():
-    path_to_load_dataset = '../../data'  # path to dataset to load from
-    path_to_model_checkpoint = '../../checkpoints'
+def main(args):
+    path_to_load_dataset = args['path_to_load_data']  # path to dataset to load from
+    path_to_model_checkpoint = args['path_to_model']
 
     '''
     Following paths are used in .../mine-pytorch/run_mi.py (,run_mi_no_context.py, and run_mi_data.py)
     '''
-    path_to_save_d4rl_data_sample = 'results'
-    path_to_save_activation = 'results'
+    path_to_save_d4rl_data_sample = args['path_to_save_model']
+    path_to_save_activation = args['path_to_save_activation']
     save_data_and_activation(
         path_to_load_dataset,
         path_to_model_checkpoint,
@@ -110,5 +111,12 @@ def main():
         env_name_list=['hopper'],
         )
 
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--path_to_load_data", type=str)
+    parser.add_argument("--path_to_load_model", type=str)
+    parser.add_argument("--path_to_save_data", type=str)
+    parser.add_argument("--path_to_save_activation", type=str)
+    args = parser.parse_args()
+    main(vars(args))
