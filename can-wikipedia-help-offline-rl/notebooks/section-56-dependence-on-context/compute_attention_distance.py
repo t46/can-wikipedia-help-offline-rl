@@ -32,7 +32,7 @@ def main(args):
     for model_name in tqdm(models):
         model1 = model_name
         model2 = model_name
-
+        
         torch.manual_seed(seed)
 
         if model1 == 'gpt2':
@@ -71,7 +71,7 @@ def main(args):
         }
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+        
         state_dim, act_dim, max_ep_len, scale = get_data_info(variant)
         states, actions, rewards, dones, rtg, timesteps, attention_mask = get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_dataset)
 
