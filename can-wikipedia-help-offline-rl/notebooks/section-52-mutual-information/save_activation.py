@@ -92,22 +92,14 @@ def save_data_and_activation(
 
 
 def main(args):
-    path_to_load_dataset = args['path_to_load_data']  # path to dataset to load from
-    path_to_model_checkpoint = args['path_to_model']
-
-    '''
-    Following paths are used in .../mine-pytorch/run_mi.py (,run_mi_no_context.py, and run_mi_data.py)
-    '''
-    path_to_save_d4rl_data_sample = args['path_to_save_model']
-    path_to_save_activation = args['path_to_save_activation']
     save_data_and_activation(
-        path_to_load_dataset,
-        path_to_model_checkpoint,
-        path_to_save_d4rl_data_sample,
-        path_to_save_activation,
-        seed=666,
-        model_name='dt',
-        epoch=40,
+        path_to_load_dataset=args['path_to_load_data'] ,
+        path_to_model_checkpoint=args['path_to_load_model'],
+        path_to_save_d4rl_data_sample=args['path_to_save_data'],
+        path_to_save_activation=args['path_to_save_activation'],
+        seed=args['seed'],
+        model_name=args['model_name'],
+        epoch=args['epoch'],
         env_name_list=['hopper'],
         )
 
@@ -118,5 +110,9 @@ if __name__ == "__main__":
     parser.add_argument("--path_to_load_model", type=str)
     parser.add_argument("--path_to_save_data", type=str)
     parser.add_argument("--path_to_save_activation", type=str)
+    parser.add_argument("--seed", type=int, default=666)
+    parser.add_argument("--epoch", type=int, default=40)
+    parser.add_argument("--model_name", type=str, default='gpt2')
+    parser.add_argument("--env_name_list", nargs='+', default=['hopper', 'halfcheetah', 'walker2d'])
     args = parser.parse_args()
     main(vars(args))
