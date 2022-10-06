@@ -9,7 +9,7 @@ import sys
 sys.path.append('../../')
 from decision_transformer.models.decision_transformer import DecisionTransformer
 
-def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask):
+def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device):
     """Get activation of a model.
 
     Args:
@@ -23,6 +23,7 @@ def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rew
         rtg (torch.Tensor): a batch of return-to-go.
         timesteps (torch.Tensor): a batch of timesteps.
         attention_mask (torch.Tensor): Mask for causal Transformer.
+        device (str): torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     Returns:
         dict: {layer_name: activation, ...}
@@ -42,9 +43,9 @@ def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rew
         n_positions=1024,
         resid_pdrop=variant["dropout"],
         attn_pdrop=0.1,
-    )
+    ).to(device)
     if variant["load_checkpoint"]:
-        state_dict = torch.load(variant["load_checkpoint"], map_location=torch.device('cpu'))
+        state_dict = torch.load(variant["load_checkpoint"])
         model.load_state_dict(state_dict)
         print(f"Loaded from {variant['load_checkpoint']}")
 
@@ -101,7 +102,7 @@ def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rew
 
     return activation_sorted
 
-def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask):
+def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device):
     """Get gradients of a model.
 
     Args:
@@ -136,9 +137,9 @@ def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewa
         n_positions=1024,
         resid_pdrop=variant["dropout"],
         attn_pdrop=0.1,
-    )
+    ).to(device)
     if variant["load_checkpoint"]:
-        state_dict = torch.load(variant["load_checkpoint"], map_location=torch.device('cpu'))
+        state_dict = torch.load(variant["load_checkpoint"])
         model.load_state_dict(state_dict)
         print(f"Loaded from {variant['load_checkpoint']}")
 
@@ -187,7 +188,7 @@ def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewa
 
 
 
-def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask):
+def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device):
     """Get gradients of a model.
 
     Args:
@@ -222,9 +223,9 @@ def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states,
         n_positions=1024,
         resid_pdrop=variant["dropout"],
         attn_pdrop=0.1,
-    )
+    ).to(device)
     if variant["load_checkpoint"]:
-        state_dict = torch.load(variant["load_checkpoint"], map_location=torch.device('cpu'))
+        state_dict = torch.load(variant["load_checkpoint"])
         model.load_state_dict(state_dict)
         print(f"Loaded from {variant['load_checkpoint']}")
 
