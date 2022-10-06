@@ -102,7 +102,7 @@ def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rew
 
     return activation_sorted
 
-def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask):
+def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device):
     """Get gradients of a model.
 
     Args:
@@ -137,9 +137,9 @@ def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewa
         n_positions=1024,
         resid_pdrop=variant["dropout"],
         attn_pdrop=0.1,
-    )
+    ).to(device)
     if variant["load_checkpoint"]:
-        state_dict = torch.load(variant["load_checkpoint"], map_location=torch.device('cpu'))
+        state_dict = torch.load(variant["load_checkpoint"])
         model.load_state_dict(state_dict)
         print(f"Loaded from {variant['load_checkpoint']}")
 
@@ -188,7 +188,7 @@ def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewa
 
 
 
-def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask):
+def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device):
     """Get gradients of a model.
 
     Args:
@@ -223,9 +223,9 @@ def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states,
         n_positions=1024,
         resid_pdrop=variant["dropout"],
         attn_pdrop=0.1,
-    )
+    ).to(device)
     if variant["load_checkpoint"]:
-        state_dict = torch.load(variant["load_checkpoint"], map_location=torch.device('cpu'))
+        state_dict = torch.load(variant["load_checkpoint"])
         model.load_state_dict(state_dict)
         print(f"Loaded from {variant['load_checkpoint']}")
 
