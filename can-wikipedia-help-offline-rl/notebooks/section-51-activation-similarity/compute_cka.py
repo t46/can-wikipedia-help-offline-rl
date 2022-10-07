@@ -10,6 +10,7 @@ from util_cka import cka, gram_linear
 sys.path.append('../')
 from sample_batch_data import get_data_info, get_batch
 from signal_propagation import get_activation
+from set_config import generate_variant
 
 
 def compute_cka(activation_1, activation_2, reward_state_action, timestep=-1):
@@ -129,40 +130,7 @@ def run_cka(
 
         dataset_name = 'medium'
 
-        if model1 == 'gpt2':
-            pretrained_lm1 = 'gpt2'
-        elif model1 == 'clip':
-            pretrained_lm1 = 'openai/clip-vit-base-patch32'
-        elif model1 == 'igpt':
-            pretrained_lm1 = 'openai/imagegpt-small'
-        elif model1 == 'dt':
-            pretrained_lm1 = False
-
-        variant = {
-            'embed_dim': 768,
-            'n_layer': 12,
-            'n_head': 1,
-            'activation_function': 'relu',
-            'dropout': 0.2, # 0.1
-            'load_checkpoint': False if epoch1==0 else f'{path_to_model_checkpoint}/{model1}_medium_{env_name}_{seed}/model_{epoch1}.pt',
-            'seed': seed,
-            'outdir': f"tmp/{model1}_{dataset_name}_{env_name}_{seed}",
-            'env': env_name,
-            'dataset': dataset_name,
-            'model_type': 'dt',
-            'K': 20, # 2
-            'pct_traj': 1.0,
-            'batch_size': 100,  # 64
-            'num_eval_episodes': 100,
-            'max_iters': 40,
-            'num_steps_per_iter': 2500,
-            'pretrained_lm': pretrained_lm1,
-            'gpt_kmeans': None,
-            'kmeans_cache': None,
-            'frozen': False,
-            'extend_positions': False,
-            'share_input_output_proj': True
-        }
+        variant = generate_variant(epoch1, path_to_model_checkpoint, model1, env_name, seed, dataset_name)
 
         if no_context:
             variant['load_checkpoint'] = False if epoch1==0 else f'{path_to_model_checkpoint}/{model1}_medium_{env_name}_{seed}_K1/model_{epoch1}.pt'
@@ -179,22 +147,10 @@ def run_cka(
             activation = get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device)
             activation_list.append(activation)
 
-            if model2 == 'gpt2':
-                pretrained_lm2 = 'gpt2'
-            elif model2 == 'clip':
-                pretrained_lm2 = 'openai/clip-vit-base-patch32'
-            elif model2 == 'igpt':
-                pretrained_lm2 = 'openai/imagegpt-small'
-            elif model2 == 'dt':
-                pretrained_lm2 = False
-            
-            variant['outdir'] =  f"tmp/{model2}_{dataset_name}_{env_name}_{seed}"
-            variant['pretrained_lm'] = pretrained_lm2
+            variant = generate_variant(epoch2, path_to_model_checkpoint, model2, env_name, seed, dataset_name)
 
             if no_context:
                 variant['load_checkpoint'] = False if epoch2==0 else f'{path_to_model_checkpoint}/{model2}_medium_{env_name}_{seed}_K1/model_{epoch2}.pt'
-            else:
-                variant['load_checkpoint'] = False if epoch2==0 else f'{path_to_model_checkpoint}/{model2}_medium_{env_name}_{seed}/model_{epoch2}.pt'
 
         reward_state_action_list = ['action', 'state', 'reward']
 
