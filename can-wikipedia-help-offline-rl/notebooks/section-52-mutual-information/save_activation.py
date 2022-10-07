@@ -86,9 +86,8 @@ def save_data_and_activation(
         }
 
         activation = get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device)
-        batch_size = variant['batch_size']
-        np.save(f'{path_to_save_activation}/activation_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', activation)
-        np.save(f'{path_to_save_d4rl_data_sample}/data_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', data)
+        np.save(f'{path_to_save_activation}/activation_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}.npy', activation)
+        np.save(f'{path_to_save_d4rl_data_sample}/data_{env_name}_{dataset_name}_{seed}.npy', data)
 
 
 def main(args):

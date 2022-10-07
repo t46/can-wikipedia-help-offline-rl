@@ -14,7 +14,6 @@ def main(variant):
     seed = variant['seed']
     epoch = variant['epoch']
     model_name = variant['model_name']
-    batch_size = variant['batch_size']
     path_to_save_mi = variant['path_to_save_mi']
     path_to_d4rl_data_sample = variant['path_to_data']
     path_to_activation = variant['path_to_activation']
@@ -25,7 +24,6 @@ def main(variant):
                                                                  env_name,
                                                                  dataset_name,
                                                                  seed,
-                                                                 batch_size,
                                                                  epoch,
                                                                  model_name,
                                                                  device
@@ -36,7 +34,6 @@ def main(variant):
             env_name,
             dataset_name,
             seed,
-            batch_size,
             epoch,
             model_name,
             device,
@@ -51,7 +48,6 @@ def main(variant):
             env_name,
             dataset_name,
             seed,
-            batch_size,
             epoch,
             model_name,
             device,
@@ -65,7 +61,6 @@ def main(variant):
             env_name,
             dataset_name,
             seed,
-            batch_size,
             device,
             rtg,
             states,
@@ -83,7 +78,6 @@ if __name__ == '__main__':
     parser.add_argument("--env_name", type=str, default="hopper")
     parser.add_argument("--dataset_name", type=str, default="medium")
     parser.add_argument("--seed", type=int, default=666)
-    parser.add_argument("--batch_size", type=int, default=100)
     parser.add_argument("--epoch", type=int, default=40)
     parser.add_argument("--model_name", type=str, default='gpt2')
     args = parser.parse_args()

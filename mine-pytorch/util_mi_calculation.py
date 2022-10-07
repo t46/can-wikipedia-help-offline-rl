@@ -36,13 +36,12 @@ def load_data_and_activation(
     env_name,
     dataset_name,
     seed,
-    batch_size,
     epoch,
     model_name,
     device
     ):
-    data = np.load(f'{path_to_d4rl_data_sample}/data_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
-    activations = np.load(f'{path_to_activation}/activation_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', allow_pickle=True).item()
+    data = np.load(f'{path_to_d4rl_data_sample}/data_{env_name}_{dataset_name}_{seed}.npy', allow_pickle=True).item()
+    activations = np.load(f'{path_to_activation}/activation_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}.npy', allow_pickle=True).item()
 
     rtg = data['rtg'][:, :-1].to(device)  # (batch_size, K, dim)
     states = data['states'].to(device)  # (batch_size, K, dim)

@@ -7,7 +7,6 @@ def run_to_save_mi(
     env_name,
     dataset_name,
     seed,
-    batch_size,
     epoch,
     model_name,
     device,
@@ -58,7 +57,7 @@ def run_to_save_mi(
         mi_dict[key].append(x_mi_list)
         mi_dict[key].append(y_mi_list)
 
-        np.save(f'{path_to_save_mi}/mi_xy_{key}_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_dict)
+        np.save(f'{path_to_save_mi}/mi_xy_{key}_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}.npy', mi_dict)
 
 
 def run_to_save_mi_no_context(
@@ -66,7 +65,6 @@ def run_to_save_mi_no_context(
     env_name,
     dataset_name,
     seed,
-    batch_size,
     epoch,
     model_name,
     device,
@@ -98,14 +96,13 @@ def run_to_save_mi_no_context(
             mi_dict[key].append(state_mi_list)
             mi_dict[key].append(action_mi_list)
 
-    np.save(f'{path_to_save_mi}/mi_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_dict)
+    np.save(f'{path_to_save_mi}/mi_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}.npy', mi_dict)
 
 def run_to_save_mi_data(
     path_to_save_mi,
     env_name,
     dataset_name,
     seed,
-    batch_size,
     device,
     rtg,
     states,
@@ -123,5 +120,5 @@ def run_to_save_mi_data(
         mi_state_action_list.append(mi_state_action)
         mi_rtg_action_list.append(mi_rtg_action)
 
-    np.save(f'{path_to_save_mi}/mi_data_state_action_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_state_action_list)
-    np.save(f'{path_to_save_mi}/mi_data_rtg_action_{env_name}_{dataset_name}_{seed}_{batch_size}.npy', mi_rtg_action_list)
+    np.save(f'{path_to_save_mi}/mi_data_state_action_{env_name}_{dataset_name}_{seed}.npy', mi_state_action_list)
+    np.save(f'{path_to_save_mi}/mi_data_rtg_action_{env_name}_{dataset_name}_{seed}.npy', mi_rtg_action_list)
