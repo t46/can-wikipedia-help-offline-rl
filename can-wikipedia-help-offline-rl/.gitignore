@@ -6,5 +6,5 @@ data
 .python_history
 .vim/
 .viminfo
-notebooks/**/**results**
-notebooks/**/**figs**
+analysis/**/**results**
+analysis/**/**figs**
