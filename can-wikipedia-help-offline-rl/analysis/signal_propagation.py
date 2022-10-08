@@ -7,12 +7,23 @@ import sys
 import torch
 from tqdm._tqdm_notebook import tqdm
 
-sys.path.append('../../')
-from decision_transformer.models.decision_transformer import \
-    DecisionTransformer
+sys.path.append("../../")
+from decision_transformer.models.decision_transformer import DecisionTransformer
 
 
-def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device):
+def get_activation(
+    variant,
+    state_dim,
+    act_dim,
+    max_ep_len,
+    states,
+    actions,
+    rewards,
+    rtg,
+    timesteps,
+    attention_mask,
+    device,
+):
     """Get activation of a model.
 
     Args:
@@ -30,7 +41,7 @@ def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rew
 
     Returns:
         dict: {layer_name: activation, ...}
-    """    
+    """
     torch.manual_seed(0)
     model = DecisionTransformer(
         args=variant,
@@ -55,25 +66,47 @@ def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rew
     model.eval()
 
     activation = {}
+
     def get_activation(name):
         def hook(model, input, output):
             activation[name] = output.detach()
+
         return hook
 
     for block_id in range(len(model.transformer.h)):
-        model.transformer.h[block_id].ln_1.register_forward_hook(get_activation(f'{block_id}.ln_1'))
-        model.transformer.h[block_id].attn.c_attn.register_forward_hook(get_activation(f'{block_id}.attn.c_attn'))
-        model.transformer.h[block_id].attn.c_proj.register_forward_hook(get_activation(f'{block_id}.attn.c_proj'))
-        model.transformer.h[block_id].attn.attn_dropout.register_forward_hook(get_activation(f'{block_id}.attn.attn_dropout'))
-        model.transformer.h[block_id].attn.resid_dropout.register_forward_hook(get_activation(f'{block_id}.attn.resid_dropout'))
-        model.transformer.h[block_id].ln_2.register_forward_hook(get_activation(f'{block_id}.ln_2'))
-        model.transformer.h[block_id].mlp.c_fc.register_forward_hook(get_activation(f'{block_id}.mlp.c_fc'))
-        model.transformer.h[block_id].mlp.c_proj.register_forward_hook(get_activation(f'{block_id}.mlp.c_proj'))
+        model.transformer.h[block_id].ln_1.register_forward_hook(
+            get_activation(f"{block_id}.ln_1")
+        )
+        model.transformer.h[block_id].attn.c_attn.register_forward_hook(
+            get_activation(f"{block_id}.attn.c_attn")
+        )
+        model.transformer.h[block_id].attn.c_proj.register_forward_hook(
+            get_activation(f"{block_id}.attn.c_proj")
+        )
+        model.transformer.h[block_id].attn.attn_dropout.register_forward_hook(
+            get_activation(f"{block_id}.attn.attn_dropout")
+        )
+        model.transformer.h[block_id].attn.resid_dropout.register_forward_hook(
+            get_activation(f"{block_id}.attn.resid_dropout")
+        )
+        model.transformer.h[block_id].ln_2.register_forward_hook(
+            get_activation(f"{block_id}.ln_2")
+        )
+        model.transformer.h[block_id].mlp.c_fc.register_forward_hook(
+            get_activation(f"{block_id}.mlp.c_fc")
+        )
+        model.transformer.h[block_id].mlp.c_proj.register_forward_hook(
+            get_activation(f"{block_id}.mlp.c_proj")
+        )
         try:
-            model.transformer.h[block_id].mlp.act.register_forward_hook(get_activation(f'{block_id}.mlp.act'))
+            model.transformer.h[block_id].mlp.act.register_forward_hook(
+                get_activation(f"{block_id}.mlp.act")
+            )
         except:
             pass
-        model.transformer.h[block_id].mlp.dropout.register_forward_hook(get_activation(f'{block_id}.mlp.dropout'))
+        model.transformer.h[block_id].mlp.dropout.register_forward_hook(
+            get_activation(f"{block_id}.mlp.dropout")
+        )
 
     _, _, _, _ = model.forward(
         states,
@@ -86,26 +119,41 @@ def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rew
 
     activation_sorted = {}
     block_name_list = [
-        'ln_1',
-        'attn.c_attn',
-        'attn.c_proj',
-        'attn.resid_dropout',
-        'ln_2',
-        'mlp.c_fc',
-        'mlp.c_proj',
-        'mlp.act',
-        'mlp.dropout'
+        "ln_1",
+        "attn.c_attn",
+        "attn.c_proj",
+        "attn.resid_dropout",
+        "ln_2",
+        "mlp.c_fc",
+        "mlp.c_proj",
+        "mlp.act",
+        "mlp.dropout",
     ]
     for block_id in range(len(model.transformer.h)):
         for block_name in block_name_list:
             try:
-                activation_sorted[f'{block_id}.{block_name}'] = activation[f'{block_id}.{block_name}']
+                activation_sorted[f"{block_id}.{block_name}"] = activation[
+                    f"{block_id}.{block_name}"
+                ]
             except:
                 pass
 
     return activation_sorted
 
-def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device):
+
+def get_gradients(
+    variant,
+    state_dim,
+    act_dim,
+    max_ep_len,
+    states,
+    actions,
+    rewards,
+    rtg,
+    timesteps,
+    attention_mask,
+    device,
+):
     """Get gradients of a model.
 
     Args:
@@ -122,7 +170,7 @@ def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewa
 
     Returns:
         list: gradients of different samples.
-    """    
+    """
 
     loss_fn = lambda s_hat, a_hat, r_hat, s, a, r: torch.mean((a_hat - a) ** 2)
 
@@ -163,7 +211,9 @@ def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewa
         )
 
         act_dim = action_preds.shape[2]
-        action_preds = action_preds.reshape(-1, act_dim)[attention_mask[batch_id, :].unsqueeze(0).reshape(-1) > 0]
+        action_preds = action_preds.reshape(-1, act_dim)[
+            attention_mask[batch_id, :].unsqueeze(0).reshape(-1) > 0
+        ]
         action_target_batch = action_target_batch.reshape(-1, act_dim)[
             attention_mask[batch_id, :].unsqueeze(0).reshape(-1) > 0
         ]
@@ -178,7 +228,7 @@ def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewa
             None,
         )
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), .25)
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 0.25)
 
         grads = []
         for name, param in model.transformer.h.named_parameters():
@@ -190,8 +240,19 @@ def get_gradients(variant, state_dim, act_dim, max_ep_len, states, actions, rewa
     return grads_list
 
 
-
-def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device):
+def get_gradients_grad_per_norm(
+    variant,
+    state_dim,
+    act_dim,
+    max_ep_len,
+    states,
+    actions,
+    rewards,
+    rtg,
+    timesteps,
+    attention_mask,
+    device,
+):
     """Get gradients of a model.
 
     Args:
@@ -208,7 +269,7 @@ def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states,
 
     Returns:
         tuple(list, dict): (gradients of different samples, gradient norm per parameter({parameter_name: gradient_norm})
-    """    
+    """
 
     loss_fn = lambda s_hat, a_hat, r_hat, s, a, r: torch.mean((a_hat - a) ** 2)
 
@@ -249,7 +310,9 @@ def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states,
         )
 
         act_dim = action_preds.shape[2]
-        action_preds = action_preds.reshape(-1, act_dim)[attention_mask[batch_id, :].unsqueeze(0).reshape(-1) > 0]
+        action_preds = action_preds.reshape(-1, act_dim)[
+            attention_mask[batch_id, :].unsqueeze(0).reshape(-1) > 0
+        ]
         action_target_batch = action_target_batch.reshape(-1, act_dim)[
             attention_mask[batch_id, :].unsqueeze(0).reshape(-1) > 0
         ]
@@ -264,7 +327,7 @@ def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states,
             None,
         )
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), .25)
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 0.25)
 
         grads = []
         for name, param in model.transformer.h.named_parameters():
@@ -299,7 +362,7 @@ def get_gradients_grad_per_norm(variant, state_dim, act_dim, max_ep_len, states,
             None,
         )
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), .25)
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 0.25)
 
         grad_norm_per_param = {}
         for name, param in model.transformer.h.named_parameters():

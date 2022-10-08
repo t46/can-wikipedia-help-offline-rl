@@ -13,6 +13,7 @@ random.seed(0)
 np.random.seed(0)
 torch.manual_seed(0)
 
+
 def discount_cumsum(x, gamma):
     """Discount cumulative summation.
 
@@ -22,12 +23,13 @@ def discount_cumsum(x, gamma):
 
     Returns:
         np.ndarray: discounted cumulative summation.
-    """    
+    """
     discount_cumsum = np.zeros_like(x)
     discount_cumsum[-1] = x[-1]
     for t in reversed(range(x.shape[0] - 1)):
         discount_cumsum[t] = x[t] + gamma * discount_cumsum[t + 1]
     return discount_cumsum
+
 
 def get_data_info(variant):
     """Get basic data property.
@@ -40,10 +42,10 @@ def get_data_info(variant):
 
     Returns:
         tuple[int, int, int, float]: state dimension, action dimension, max episode length, normalizing factor for return.
-    """    
+    """
     env_name, dataset = variant["env"], variant["dataset"]
     model_type = variant["model_type"]
-    exp_prefix = 'gym-experiment'
+    exp_prefix = "gym-experiment"
     group_name = f"{exp_prefix}-{env_name}-{dataset}"
     exp_prefix = f"{group_name}-{random.randint(int(1e5), int(1e6) - 1)}"
 
@@ -97,11 +99,16 @@ def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_da
 
     Returns:
         tuple[torch.Tensor, torch.Tensor,
-              torch.Tensor, torch.Tensor, 
-              torch.Tensor, torch.Tensor, 
+              torch.Tensor, torch.Tensor,
+              torch.Tensor, torch.Tensor,
               torch.Tensor]: states, actions, rewards, dones, return-to-gos, timesteps, attention masks.
-    """    
-    env_name, dataset, max_len, batch_size = variant["env"], variant["dataset"], variant["K"], variant["batch_size"]
+    """
+    env_name, dataset, max_len, batch_size = (
+        variant["env"],
+        variant["dataset"],
+        variant["K"],
+        variant["batch_size"],
+    )
     # load dataset
     dataset_path = f"{path_to_dataset}/{env_name}-{dataset}-v2.pkl"
     with open(dataset_path, "rb") as f:
@@ -131,7 +138,7 @@ def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_da
     print(f"Average return: {np.mean(returns):.2f}, std: {np.std(returns):.2f}")
     print(f"Max return: {np.max(returns):.2f}, min: {np.min(returns):.2f}")
     print("=" * 50)
-    
+
     pct_traj = variant.get("pct_traj", 1.0)
 
     # only train on top pct_traj trajectories (for %BC experiment)
@@ -171,9 +178,7 @@ def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_da
         else:
             d.append(traj["dones"][si : si + max_len].reshape(1, -1))
         timesteps.append(np.arange(si, si + s[-1].shape[1]).reshape(1, -1))
-        timesteps[-1][timesteps[-1] >= max_ep_len] = (
-            max_ep_len - 1
-        )  # padding cutoff
+        timesteps[-1][timesteps[-1] >= max_ep_len] = max_ep_len - 1  # padding cutoff
         rtg.append(
             discount_cumsum(traj["rewards"][si:], gamma=1.0)[
                 : s[-1].shape[1] + 1
@@ -194,16 +199,13 @@ def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_da
         r[-1] = np.concatenate([np.zeros((1, max_len - tlen, 1)), r[-1]], axis=1)
         d[-1] = np.concatenate([np.ones((1, max_len - tlen)) * 2, d[-1]], axis=1)
         rtg[-1] = (
-            np.concatenate([np.zeros((1, max_len - tlen, 1)), rtg[-1]], axis=1)
-            / scale
+            np.concatenate([np.zeros((1, max_len - tlen, 1)), rtg[-1]], axis=1) / scale
         )
         timesteps[-1] = np.concatenate(
             [np.zeros((1, max_len - tlen)), timesteps[-1]], axis=1
         )
         mask.append(
-            np.concatenate(
-                [np.zeros((1, max_len - tlen)), np.ones((1, tlen))], axis=1
-            )
+            np.concatenate([np.zeros((1, max_len - tlen)), np.ones((1, tlen))], axis=1)
         )
 
     s = torch.from_numpy(np.concatenate(s, axis=0)).to(
@@ -215,9 +217,7 @@ def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_da
     r = torch.from_numpy(np.concatenate(r, axis=0)).to(
         dtype=torch.float32, device=device
     )
-    d = torch.from_numpy(np.concatenate(d, axis=0)).to(
-        dtype=torch.long, device=device
-    )
+    d = torch.from_numpy(np.concatenate(d, axis=0)).to(dtype=torch.long, device=device)
     rtg = torch.from_numpy(np.concatenate(rtg, axis=0)).to(
         dtype=torch.float32, device=device
     )

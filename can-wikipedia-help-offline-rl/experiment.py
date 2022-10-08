@@ -13,9 +13,10 @@ import torch
 
 import wandb
 from decision_transformer.evaluation.evaluate_episodes import (
-    evaluate_episode, evaluate_episode_rtg)
-from decision_transformer.models.decision_transformer import \
-    DecisionTransformer
+    evaluate_episode,
+    evaluate_episode_rtg,
+)
+from decision_transformer.models.decision_transformer import DecisionTransformer
 from decision_transformer.models.mlp_bc import MLPBCModel
 from decision_transformer.training.act_trainer import ActTrainer
 from decision_transformer.training.seq_trainer import SequenceTrainer
@@ -33,7 +34,7 @@ def discount_cumsum(x, gamma):
 def experiment(
     exp_prefix,
     variant,
-):  
+):
     seed = variant["seed"]
     torch.manual_seed(seed)
     # device = variant.get("device", "cuda")
@@ -54,10 +55,10 @@ def experiment(
     out_dir = variant["outdir"] + f"/{model_name}_{data_type}_{env_name}_{seed}"
 
     if K != 20:
-        exp_name += f'-K{K}'
+        exp_name += f"-K{K}"
         out_dir += f"_K{K}"
     if variant["remove_grad_clip"]:
-        exp_name += '-no-grad-clip'
+        exp_name += "-no-grad-clip"
         out_dir += "_no_grad_clip"
 
     os.makedirs(out_dir, exist_ok=True)
@@ -371,7 +372,7 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", "-lr", type=float, default=1e-4)
     parser.add_argument("--lm_learning_rate", "-lmlr", type=float, default=None)
     parser.add_argument("--weight_decay", "-wd", type=float, default=1e-4)
-    parser.add_argument("--warmup_steps", type=int, default=5000) # 10000
+    parser.add_argument("--warmup_steps", type=int, default=5000)  # 10000
 
     parser.add_argument("--num_eval_episodes", type=int, default=100)
     parser.add_argument("--max_iters", type=int, default=40)
