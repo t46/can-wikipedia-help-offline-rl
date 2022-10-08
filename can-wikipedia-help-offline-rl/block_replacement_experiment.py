@@ -48,9 +48,16 @@ def experiment(
     pretrained_block = variant["pretrained_block"]
     group_name = f"{exp_prefix}-{env_name}-{dataset}"
     exp_name = f"{group_name}-{model_type}-{seed}"
+
+    data_type = variant["dataset"]
+    out_dir = variant["outdir"] + f"/dt_{data_type}_{env_name}_{seed}"
+
     if K != 20:
         exp_name += f'-K{K}'
+        out_dir += f'_K{K}'
+
     exp_name += f'-block{pretrained_block}'
+    out_dir += f'_block{pretrained_block}'
 
     if env_name == "hopper":
         env = gym.make("Hopper-v3")
@@ -118,7 +125,6 @@ def experiment(
     batch_size = variant["batch_size"]
     num_eval_episodes = variant["num_eval_episodes"]
     pct_traj = variant.get("pct_traj", 1.0)
-    early_stopping = variant.get("early_stopping", False)
 
     # only train on top pct_traj trajectories (for %BC experiment)
     num_timesteps = max(int(pct_traj * num_timesteps), 1)

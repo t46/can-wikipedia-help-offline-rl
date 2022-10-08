@@ -38,7 +38,6 @@ def experiment(
 ):  
     seed = variant["seed"]
     torch.manual_seed(seed)
-    os.makedirs(variant["outdir"], exist_ok=True)
     # device = variant.get("device", "cuda")
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     log_to_wandb = variant.get("log_to_wandb", False)
@@ -48,10 +47,22 @@ def experiment(
     K = variant["K"]
     group_name = f"{exp_prefix}-{env_name}-{dataset}"
     exp_name = f"{group_name}-{model_type}-{seed}"
+
+    if variant["pretrained_lm"] == None:
+        model_name = "dt"
+    else:
+        model_name = variant["pretrained_lm"]
+    data_type = variant["dataset"]
+    out_dir = variant["outdir"] + f"/{model_name}_{data_type}_{env_name}_{seed}"
+
     if K != 20:
         exp_name += f'-K{K}'
+        out_dir += f"_K{K}"
     if variant["remove_grad_clip"]:
         exp_name += '-no-grad-clip'
+        out_dir += "_no_grad_clip"
+
+    os.makedirs(out_dir, exist_ok=True)
 
     if env_name == "hopper":
         env = gym.make("Hopper-v3")
@@ -87,7 +98,8 @@ def experiment(
     act_dim = env.action_space.shape[0]
 
     # load dataset
-    dataset_path = f"data/{env_name}-{dataset}-v2.pkl"
+    data_path = variant["data_path"]
+    dataset_path = f"{data_path}/{env_name}-{dataset}-v2.pkl"
     with open(dataset_path, "rb") as f:
         trajectories = pickle.load(f)
 
@@ -386,6 +398,7 @@ if __name__ == "__main__":
     parser.add_argument("--kmeans_mean", action="store_true", default=False)
 
     parser.add_argument("--remove_grad_clip", action="store_true", default=False)
+    parser.add_argument("--data_path", type=str, default="data")
 
     args = parser.parse_args()
 
