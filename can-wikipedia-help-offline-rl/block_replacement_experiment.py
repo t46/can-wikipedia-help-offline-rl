@@ -13,9 +13,10 @@ import torch
 
 import wandb
 from decision_transformer.evaluation.evaluate_episodes import (
-    evaluate_episode, evaluate_episode_rtg)
-from decision_transformer.models.decision_transformer import \
-    DecisionTransformer
+    evaluate_episode,
+    evaluate_episode_rtg,
+)
+from decision_transformer.models.decision_transformer import DecisionTransformer
 from decision_transformer.models.mlp_bc import MLPBCModel
 from decision_transformer.training.act_trainer import ActTrainer
 from decision_transformer.training.seq_trainer import SequenceTrainer
@@ -52,11 +53,11 @@ def experiment(
     out_dir = variant["outdir"] + f"/dt_{data_type}_{env_name}_{seed}"
 
     if K != 20:
-        exp_name += f'-K{K}'
-        out_dir += f'_K{K}'
+        exp_name += f"-K{K}"
+        out_dir += f"_K{K}"
 
-    exp_name += f'-block{pretrained_block}'
-    out_dir += f'_block{pretrained_block}'
+    exp_name += f"-block{pretrained_block}"
+    out_dir += f"_block{pretrained_block}"
 
     if env_name == "hopper":
         env = gym.make("Hopper-v3")
@@ -293,26 +294,26 @@ def experiment(
     else:
         raise NotImplementedError
 
-    variant['pretrained_lm'] = False    
+    variant["pretrained_lm"] = False
     model = DecisionTransformer(
-            args=variant,
-            state_dim=state_dim,
-            act_dim=act_dim,
-            max_length=K,
-            max_ep_len=max_ep_len,
-            hidden_size=variant["embed_dim"],
-            n_layer=variant["n_layer"],
-            n_head=variant["n_head"],
-            n_inner=4 * variant["embed_dim"],
-            activation_function=variant["activation_function"],
-            n_positions=1024,
-            resid_pdrop=variant["dropout"],
-            attn_pdrop=0.1,
-        )
+        args=variant,
+        state_dim=state_dim,
+        act_dim=act_dim,
+        max_length=K,
+        max_ep_len=max_ep_len,
+        hidden_size=variant["embed_dim"],
+        n_layer=variant["n_layer"],
+        n_head=variant["n_head"],
+        n_inner=4 * variant["embed_dim"],
+        activation_function=variant["activation_function"],
+        n_positions=1024,
+        resid_pdrop=variant["dropout"],
+        attn_pdrop=0.1,
+    )
     for i in range(12):
         if i == pretrained_block:
             model.transformer.h[i] = model_pretrained.transformer.h[i]
-    
+
     model = model.to(device=device)
 
     warmup_steps = variant["warmup_steps"]
@@ -386,7 +387,7 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", "-lr", type=float, default=1e-4)
     parser.add_argument("--lm_learning_rate", "-lmlr", type=float, default=None)
     parser.add_argument("--weight_decay", "-wd", type=float, default=1e-4)
-    parser.add_argument("--warmup_steps", type=int, default=5000) # 10000
+    parser.add_argument("--warmup_steps", type=int, default=5000)  # 10000
 
     parser.add_argument("--num_eval_episodes", type=int, default=100)
     parser.add_argument("--max_iters", type=int, default=40)
