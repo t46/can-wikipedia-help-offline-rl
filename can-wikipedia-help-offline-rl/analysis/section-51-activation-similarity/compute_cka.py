@@ -68,7 +68,7 @@ def plot_cka(path_to_save_figure, cka_matrix, reward_state_action, model1, model
     sns.set_style("ticks")
     sns.set_context("paper", 1.5, {"lines.linewidth": 2})
 
-    ax = sns.heatmap(cka_matrix, vmin=0, vmax=1, square=True)  # , cmap='bone'
+    ax = sns.heatmap(cka_matrix, vmin=0, vmax=1, square=True)
     ax.invert_yaxis()
     if model1 == 'dt':
         label1 = 'random init'
@@ -123,22 +123,22 @@ def run_cka(
         no_context (bool, optional): If True, compute CKA of K=1. Defaults to False.
         device (str): cuda or cpu
     """    
+    
+    dataset_name = 'medium'
+    device = torch.device(device)
+    reward_state_action_list = ['action', 'state', 'reward']
 
     for env_name in env_name_list:
         
         torch.manual_seed(seed)
 
-        dataset_name = 'medium'
-
         variant = generate_variant(epoch1, path_to_model_checkpoint, model1, env_name, seed, dataset_name)
 
         if no_context:
-            variant['load_checkpoint'] = False if epoch1==0 else f'{path_to_model_checkpoint}/{model1}_medium_{env_name}_{seed}_K1/model_{epoch1}.pt'
-
-        device = torch.device(device)
+            variant['load_checkpoint'] = False if epoch1==0 else f'{path_to_model_checkpoint}/{model1}_{dataset_name}_{env_name}_{seed}_K1/model_{epoch1}.pt'
 
         state_dim, act_dim, max_ep_len, scale = get_data_info(variant)
-        states, actions, rewards, dones, rtg, timesteps, attention_mask = get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_dataset)
+        states, actions, rewards, _, rtg, timesteps, attention_mask = get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_dataset)
 
         activation_list = []
 
@@ -150,9 +150,7 @@ def run_cka(
             variant = generate_variant(epoch2, path_to_model_checkpoint, model2, env_name, seed, dataset_name)
 
             if no_context:
-                variant['load_checkpoint'] = False if epoch2==0 else f'{path_to_model_checkpoint}/{model2}_medium_{env_name}_{seed}_K1/model_{epoch2}.pt'
-
-        reward_state_action_list = ['action', 'state', 'reward']
+                variant['load_checkpoint'] = False if epoch2==0 else f'{path_to_model_checkpoint}/{model2}_{dataset_name}_{env_name}_{seed}_K1/model_{epoch2}.pt'
 
         if block:
             for reward_state_action in reward_state_action_list:
@@ -186,7 +184,7 @@ def run_cka(
 
 
 def main(args):
-    cka_matrix = run_cka(
+    _ = run_cka(
         args['path_to_load_data'],
         args['path_to_load_model'],
         args['path_to_save_cka'],
