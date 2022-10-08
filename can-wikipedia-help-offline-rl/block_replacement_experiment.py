@@ -5,7 +5,6 @@ import argparse
 import os
 import pickle
 import random
-import sys
 
 import gym
 import numpy as np
@@ -155,13 +154,13 @@ def experiment(
             si = random.randint(0, traj["rewards"].shape[0] - 1)
 
             # get sequences from dataset
-            s.append(traj["observations"][si : si + max_len].reshape(1, -1, state_dim))
-            a.append(traj["actions"][si : si + max_len].reshape(1, -1, act_dim))
-            r.append(traj["rewards"][si : si + max_len].reshape(1, -1, 1))
+            s.append(traj["observations"][si: si + max_len].reshape(1, -1, state_dim))
+            a.append(traj["actions"][si: si + max_len].reshape(1, -1, act_dim))
+            r.append(traj["rewards"][si: si + max_len].reshape(1, -1, 1))
             if "terminals" in traj:
-                d.append(traj["terminals"][si : si + max_len].reshape(1, -1))
+                d.append(traj["terminals"][si: si + max_len].reshape(1, -1))
             else:
-                d.append(traj["dones"][si : si + max_len].reshape(1, -1))
+                d.append(traj["dones"][si: si + max_len].reshape(1, -1))
             timesteps.append(np.arange(si, si + s[-1].shape[1]).reshape(1, -1))
             timesteps[-1][timesteps[-1] >= max_ep_len] = (
                 max_ep_len - 1
@@ -336,6 +335,7 @@ def experiment(
         )
     elif model_type == "bc":
         trainer = ActTrainer(
+            args=variant,
             model=model,
             optimizer=optimizer,
             batch_size=batch_size,
