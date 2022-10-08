@@ -69,13 +69,13 @@ conda activate mine
 
 We run the following command to fine-tune the *randomly initialized model* used in Section 5.1 - 5.4 (context K=20). 
 ```{sh}
-python experiment.py --env hopper --dataset medium --model_type dt --seed 666 --outdir "checkpoints/dt_medium_hopper_666" --dropout 0.2 --share_input_output_proj --warmup_steps 5000 --embed_dim 768 --n_layer 12 -w
+python experiment.py --env hopper --dataset medium --model_type dt --seed 666 --outdir checkpoints --dropout 0.2 --share_input_output_proj --warmup_steps 5000 --embed_dim 768 --n_layer 12 -w
 ```
 For pre-trained models, add `--pretrained_lm gpt2` for *language-pre-trained model (GPT2)* and `--pretrained_lm openai/imagegpt-small` for *image-pre-trained model (iGPT)*. Running command above outputs per epoch i) fine-tuned models under `./checkpoints` directory, i.e. `checkpoints/dt_medium_hopper_666/model_40.pt` and ii) results such as mean return and action error to Weights and Biases. For sanity check in Appendix. A, run `sanity_check_preformance.ipynb` after running the above command.
 
 For output the results of Section 5.5 and 5.6.2 (context K=1), just add `--K 1` option and change `--outdir` to `"checkpoints/dt_medium_hopper_666_K1"`. To get the results of block replacement experiment, run the following command.
 ```
-python block_replacement_experiment.py --env hopper --dataset medium --model_type dt --seed 666 --outdir "checkpoints/block1_dt_medium_hopper_666_K1" --dropout 0.2 --share_input_output_proj --warmup_steps 5000 --embed_dim 768 --n_layer 12 -w --pretrained_lm gpt2 --K 1 --pretrained_block 1 --max_iters 10
+python block_replacement_experiment.py --env hopper --dataset medium --model_type dt --seed 666 --outdir checkpoints --dropout 0.2 --share_input_output_proj --warmup_steps 5000 --embed_dim 768 --n_layer 12 -w --pretrained_lm gpt2 --K 1 --pretrained_block 1 --max_iters 10
 ```
 
 Although other options are in `experiment.py`, we do not use these options.
