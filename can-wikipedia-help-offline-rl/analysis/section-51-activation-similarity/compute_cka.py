@@ -1,16 +1,17 @@
-import numpy as np
-import torch
-import sys
-from tqdm import tqdm
-import seaborn as sns
-import matplotlib.pyplot as plt
 import argparse
+import sys
+
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+import torch
+from tqdm import tqdm
 from util_cka import cka, gram_linear
 
 sys.path.append('../')
-from sample_batch_data import get_data_info, get_batch
-from signal_propagation import get_activation
+from sample_batch_data import get_batch, get_data_info
 from set_config import generate_variant
+from signal_propagation import get_activation
 
 
 def compute_cka(activation_1, activation_2, reward_state_action, timestep=-1):

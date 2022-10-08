@@ -1,16 +1,17 @@
-import numpy as np
-import torch
-import pandas as pd
-from tqdm import tqdm
-import seaborn as sns
-import matplotlib.pyplot as plt
-import sys
 import argparse
+import sys
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import torch
+from tqdm import tqdm
 
 sys.path.append('../')
-from sample_batch_data import get_data_info, get_batch
-from signal_propagation import get_gradients, get_gradients_grad_per_norm
+from sample_batch_data import get_batch, get_data_info
 from set_config import generate_variant
+from signal_propagation import get_gradients, get_gradients_grad_per_norm
 
 sns.set_style("ticks")
 sns.set_context("paper", 1.5, {"lines.linewidth": 2})

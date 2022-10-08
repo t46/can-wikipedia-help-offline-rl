@@ -2,12 +2,15 @@
 Functions to get activation or gradients.
 """
 
+import sys
+
 import torch
 from tqdm._tqdm_notebook import tqdm
 
-import sys
 sys.path.append('../../')
-from decision_transformer.models.decision_transformer import DecisionTransformer
+from decision_transformer.models.decision_transformer import \
+    DecisionTransformer
+
 
 def get_activation(variant, state_dim, act_dim, max_ep_len, states, actions, rewards, rtg, timesteps, attention_mask, device):
     """Get activation of a model.
