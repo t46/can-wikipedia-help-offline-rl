@@ -36,9 +36,7 @@ def experiment(
 ):
     seed = variant["seed"]
     torch.manual_seed(seed)
-    os.makedirs(variant["outdir"], exist_ok=True)
-    # device = variant.get("device", "cuda")
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = variant.get("device", "cuda")
     log_to_wandb = variant.get("log_to_wandb", False)
 
     env_name, dataset = variant["env"], variant["dataset"]
@@ -57,6 +55,8 @@ def experiment(
 
     exp_name += f"-block{pretrained_block}"
     out_dir += f"_block{pretrained_block}"
+
+    os.makedirs(variant["outdir"], exist_ok=True)
 
     if env_name == "hopper":
         env = gym.make("Hopper-v3")

@@ -36,8 +36,7 @@ def experiment(
 ):
     seed = variant["seed"]
     torch.manual_seed(seed)
-    # device = variant.get("device", "cuda")
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = variant.get("device", "cuda")
     log_to_wandb = variant.get("log_to_wandb", False)
 
     env_name, dataset = variant["env"], variant["dataset"]
