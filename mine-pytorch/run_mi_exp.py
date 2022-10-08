@@ -1,9 +1,11 @@
 import argparse
+
 import numpy as np
 from tqdm import tqdm
-from util_mi_calculation import load_data_and_activation
-from util_to_save_mi import run_to_save_mi, run_to_save_mi_no_context, run_to_save_mi_data
 
+from util_mi_calculation import load_data_and_activation
+from util_to_save_mi import (run_to_save_mi, run_to_save_mi_data,
+                             run_to_save_mi_no_context)
 
 device = 'cuda'
 

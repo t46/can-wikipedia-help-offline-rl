@@ -1,6 +1,7 @@
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
+
 from mine.models.mine import Mine
 
 

@@ -2,10 +2,11 @@
 Functions to get batch of samples.
 Based on this code https://github.com/machelreid/can-wikipedia-help-offline-rl/blob/main/code/experiment.py
 """
-import numpy as np
-import random
-import gym
 import pickle
+import random
+
+import gym
+import numpy as np
 import torch
 
 random.seed(0)

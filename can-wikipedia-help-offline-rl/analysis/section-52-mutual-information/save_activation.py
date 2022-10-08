@@ -1,12 +1,13 @@
+import argparse
+import sys
+
 import numpy as np
 import torch
-import sys
-import argparse
 
 sys.path.append('../')
-from sample_batch_data import get_data_info, get_batch
-from signal_propagation import get_activation
+from sample_batch_data import get_batch, get_data_info
 from set_config import generate_variant
+from signal_propagation import get_activation
 
 
 def save_data_and_activation(

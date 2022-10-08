@@ -1,6 +1,8 @@
 import numpy as np
-from util_mi_calculation import calc_mi
 from tqdm import tqdm
+
+from util_mi_calculation import calc_mi
+
 
 def run_to_save_mi(
     path_to_save_mi,
