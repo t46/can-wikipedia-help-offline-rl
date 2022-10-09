@@ -1,3 +1,7 @@
+"""
+Compute, plot and save CKA.
+"""
+
 import argparse
 import sys
 
@@ -24,7 +28,7 @@ def compute_cka(activation_1, activation_2, reward_state_action, timestep=-1):
         timestep (int, optional): Activation at this timestep is used for CKA computation. Defaults to -1.
 
     Returns:
-        np.ndarray[]: scalar CKA
+        np.ndarray: scalar CKA
     """
     # Input is sequence of [..., return-to-go, state, action]
     if reward_state_action == "reward":
@@ -132,6 +136,7 @@ def run_cka(
     """Compute CKA and save it as array and fig.
 
     Args:
+        path_to_dataset (str): Path to load D4RL dataset.
         path_to_model_checkpoint (str): Path to load model checkpoint.
         path_to_save_cka (str): Path to save CKA matrix as np.array.
         path_to_save_figure (str): Path to save figure of CKA heatmap.

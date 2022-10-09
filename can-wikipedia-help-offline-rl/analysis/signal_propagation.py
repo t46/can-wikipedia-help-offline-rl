@@ -37,7 +37,7 @@ def get_activation(
         rtg (torch.Tensor): a batch of return-to-go.
         timesteps (torch.Tensor): a batch of timesteps.
         attention_mask (torch.Tensor): Mask for causal Transformer.
-        device (str): torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device (torch.device): torch.device("cuda" if torch.cuda.is_available() else "cpu").
 
     Returns:
         dict: {layer_name: activation, ...}
@@ -67,7 +67,7 @@ def get_activation(
 
     activation = {}
 
-    def get_activation(name):
+    def extract_activation(name):
         def hook(model, input, output):
             activation[name] = output.detach()
 
@@ -75,37 +75,37 @@ def get_activation(
 
     for block_id in range(len(model.transformer.h)):
         model.transformer.h[block_id].ln_1.register_forward_hook(
-            get_activation(f"{block_id}.ln_1")
+            extract_activation(f"{block_id}.ln_1")
         )
         model.transformer.h[block_id].attn.c_attn.register_forward_hook(
-            get_activation(f"{block_id}.attn.c_attn")
+            extract_activation(f"{block_id}.attn.c_attn")
         )
         model.transformer.h[block_id].attn.c_proj.register_forward_hook(
-            get_activation(f"{block_id}.attn.c_proj")
+            extract_activation(f"{block_id}.attn.c_proj")
         )
         model.transformer.h[block_id].attn.attn_dropout.register_forward_hook(
-            get_activation(f"{block_id}.attn.attn_dropout")
+            extract_activation(f"{block_id}.attn.attn_dropout")
         )
         model.transformer.h[block_id].attn.resid_dropout.register_forward_hook(
-            get_activation(f"{block_id}.attn.resid_dropout")
+            extract_activation(f"{block_id}.attn.resid_dropout")
         )
         model.transformer.h[block_id].ln_2.register_forward_hook(
-            get_activation(f"{block_id}.ln_2")
+            extract_activation(f"{block_id}.ln_2")
         )
         model.transformer.h[block_id].mlp.c_fc.register_forward_hook(
-            get_activation(f"{block_id}.mlp.c_fc")
+            extract_activation(f"{block_id}.mlp.c_fc")
         )
         model.transformer.h[block_id].mlp.c_proj.register_forward_hook(
-            get_activation(f"{block_id}.mlp.c_proj")
+            extract_activation(f"{block_id}.mlp.c_proj")
         )
         try:
             model.transformer.h[block_id].mlp.act.register_forward_hook(
-                get_activation(f"{block_id}.mlp.act")
+                extract_activation(f"{block_id}.mlp.act")
             )
         except:
             pass
         model.transformer.h[block_id].mlp.dropout.register_forward_hook(
-            get_activation(f"{block_id}.mlp.dropout")
+            extract_activation(f"{block_id}.mlp.dropout")
         )
 
     _, _, _, _ = model.forward(
@@ -167,6 +167,7 @@ def get_gradients(
         rtg (torch.Tensor): a batch of return-to-go.
         timesteps (torch.Tensor): a batch of timesteps.
         attention_mask (torch.Tensor): Mask for causal Transformer.
+        device (torch.device): torch.device("cuda" if torch.cuda.is_available() else "cpu").
 
     Returns:
         list: gradients of different samples.
@@ -266,6 +267,7 @@ def get_gradients_grad_per_norm(
         rtg (torch.Tensor): a batch of return-to-go.
         timesteps (torch.Tensor): a batch of timesteps.
         attention_mask (torch.Tensor): Mask for causal Transformer.
+        device (torch.device): torch.device("cuda" if torch.cuda.is_available() else "cpu").
 
     Returns:
         tuple(list, dict): (gradients of different samples, gradient norm per parameter({parameter_name: gradient_norm})

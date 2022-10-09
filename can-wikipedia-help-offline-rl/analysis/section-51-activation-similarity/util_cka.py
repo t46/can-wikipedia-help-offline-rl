@@ -1,10 +1,9 @@
 """
 Utility functions for CKA computation.
+The code below is from https://github.com/google-research/google-research/tree/master/representation_similarity
 """
 
 import numpy as np
-
-# The code below is from https://github.com/google-research/google-research/tree/master/representation_similarity
 
 
 def gram_linear(x):
