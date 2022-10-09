@@ -23,6 +23,15 @@ from utils import get_optimizer
 
 
 def discount_cumsum(x, gamma):
+    """Discount commulative summation of rewards.
+
+    Args:
+        x (np.ndarray): Trajectory of rewards.
+        gamma (float): Discount factor.
+
+    Returns:
+       np.ndarray: Discounted cummulative summation of rewards.
+    """
     discount_cumsum = np.zeros_like(x)
     discount_cumsum[-1] = x[-1]
     for t in reversed(range(x.shape[0] - 1)):
@@ -34,24 +43,33 @@ def experiment(
     exp_prefix,
     variant,
 ):
+    """Run fine-tuning.
+
+    Args:
+        exp_prefix (str): Prefix of wandb's run.
+        variant (dict): Arguments.
+
+    Raises:
+        NotImplementedError: Environment is not implemented.
+        NotImplementedError: Model type is not implemented.
+
+    """
     seed = variant["seed"]
     torch.manual_seed(seed)
-    # device = variant.get("device", "cuda")
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = variant.get("device", "cuda")
     log_to_wandb = variant.get("log_to_wandb", False)
 
     env_name, dataset = variant["env"], variant["dataset"]
     model_type = variant["model_type"]
     K = variant["K"]
     group_name = f"{exp_prefix}-{env_name}-{dataset}"
-    exp_name = f"{group_name}-{model_type}-{seed}"
 
     if variant["pretrained_lm"] is None:
         model_name = "dt"
     else:
         model_name = variant["pretrained_lm"]
-    data_type = variant["dataset"]
-    out_dir = variant["outdir"] + f"/{model_name}_{data_type}_{env_name}_{seed}"
+    exp_name = f"{group_name}-{model_name}-{seed}"
+    out_dir = variant["outdir"] + f"/{model_name}_{dataset}_{env_name}_{seed}"
 
     if K != 20:
         exp_name += f"-K{K}"
@@ -146,6 +164,15 @@ def experiment(
     p_sample = traj_lens[sorted_inds] / sum(traj_lens[sorted_inds])
 
     def get_batch(batch_size=256, max_len=K):
+        """Get a batch of sample data from D4RL.
+
+        Args:
+            batch_size (int, optional): Batch size. Defaults to 256.
+            max_len (_type_, optional): Maximum length of trajectories. Defaults to K.
+
+        Returns:
+            tuple: Batch of states, actions, rewards, done, return-to-go, timesteps, masks
+        """
         batch_inds = np.random.choice(
             np.arange(num_trajectories),
             size=batch_size,
@@ -225,6 +252,11 @@ def experiment(
         return s, a, r, d, rtg, timesteps, mask
 
     def eval_episodes(target_rew):
+        """Evaluate agent's performance for episodes.
+
+        Args:
+            target_rew (_type_): Evaluation conditioning target
+        """
         def fn(model):
             returns, lengths = [], []
             for _ in range(num_eval_episodes):
