@@ -62,9 +62,10 @@ def experiment(
     env_name, dataset = variant["env"], variant["dataset"]
     model_type = variant["model_type"]
     K = variant["K"]
+    pretrained_block = variant["pretrained_block"]
     group_name = f"{exp_prefix}-{env_name}-{dataset}"
 
-    if variant["pretrained_lm"] is None:
+    if (variant["pretrained_lm"] is None) or (pretrained_block is not None):
         model_name = "dt"
     else:
         model_name = variant["pretrained_lm"]
@@ -77,6 +78,9 @@ def experiment(
     if variant["remove_grad_clip"]:
         exp_name += "-no-grad-clip"
         out_dir += "_no_grad_clip"
+    if pretrained_block:
+        exp_name += f"-block{pretrained_block}"
+        out_dir += f"_block{pretrained_block}"
 
     os.makedirs(out_dir, exist_ok=True)
 
@@ -299,6 +303,40 @@ def experiment(
 
         return fn
 
+    if pretrained_block:
+        if model_type == "dt":
+            model_pretrained = DecisionTransformer(
+                args=variant,
+                state_dim=state_dim,
+                act_dim=act_dim,
+                max_length=K,
+                max_ep_len=max_ep_len,
+                hidden_size=variant["embed_dim"],
+                n_layer=variant["n_layer"],
+                n_head=variant["n_head"],
+                n_inner=4 * variant["embed_dim"],
+                activation_function=variant["activation_function"],
+                n_positions=1024,
+                resid_pdrop=variant["dropout"],
+                attn_pdrop=0.1,
+            )
+            if variant["load_checkpoint"]:
+                state_dict = torch.load(variant["load_checkpoint"])
+                model_pretrained.load_state_dict(state_dict)
+                print(f"Loaded from {variant['load_checkpoint']}")
+        elif model_type == "bc":
+            model_pretrained = MLPBCModel(
+                state_dim=state_dim,
+                act_dim=act_dim,
+                max_length=K,
+                hidden_size=variant["embed_dim"],
+                n_layer=variant["n_layer"],
+            )
+        else:
+            raise NotImplementedError
+
+        variant["pretrained_lm"] = False
+
     if model_type == "dt":
         model = DecisionTransformer(
             args=variant,
@@ -329,6 +367,11 @@ def experiment(
         )
     else:
         raise NotImplementedError
+
+    if pretrained_block:
+        for i in range(12):
+            if i == pretrained_block:
+                model.transformer.h[i] = model_pretrained.transformer.h[i]
 
     model = model.to(device=device)
 
@@ -430,6 +473,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--remove_grad_clip", action="store_true", default=False)
     parser.add_argument("--data_path", type=str, default="data")
+    parser.add_argument("--pretrained_block", type=int, default=None)
 
     args = parser.parse_args()
 
