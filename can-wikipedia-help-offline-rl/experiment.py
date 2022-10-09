@@ -63,14 +63,13 @@ def experiment(
     model_type = variant["model_type"]
     K = variant["K"]
     group_name = f"{exp_prefix}-{env_name}-{dataset}"
-    exp_name = f"{group_name}-{model_type}-{seed}"
 
     if variant["pretrained_lm"] is None:
         model_name = "dt"
     else:
         model_name = variant["pretrained_lm"]
-    data_type = variant["dataset"]
-    out_dir = variant["outdir"] + f"/{model_name}_{data_type}_{env_name}_{seed}"
+    exp_name = f"{group_name}-{model_name}-{seed}"
+    out_dir = variant["outdir"] + f"/{model_name}_{dataset}_{env_name}_{seed}"
 
     if K != 20:
         exp_name += f"-K{K}"
