@@ -1,3 +1,8 @@
+"""
+Function to generate config.
+"""
+
+
 def generate_variant(
     epoch,
     path_to_model_checkpoint,
@@ -7,6 +12,20 @@ def generate_variant(
     dataset_name,
     batch_size=100,
 ):
+    """Generate dictionary of config.
+
+    Args:
+        epoch (int): The number of training epochs.
+        path_to_model_checkpoint (str): Path to load model checkpoint.
+        model_name (str): dt, gpt2, or igpt.
+        env_name (str): hopper, halfcheetah, or walker2d.
+        seed (int): Random seed.
+        dataset_name (_tstrype_): medium, expert, or random.
+        batch_size (int, optional): Batch size of D4RL sample. Defaults to 100.
+
+    Returns:
+        dict: Config dictionary.
+    """
     if model_name == "gpt2":
         pretrained_lm = "gpt2"
     elif model_name == "clip":
