@@ -69,7 +69,7 @@ def plot_cka(
     seed,
     epoch1,
     epoch2,
-    block,
+    block=False,
 ):
     """Plot CKA heatmap.
 
@@ -84,7 +84,7 @@ def plot_cka(
         seed (int): 666.
         epoch1 (int): 0 or 40.
         epoch2 (int): 0 or 40.
-        block (bool): If the activation is that of Transformer block, set this True.
+        block (bool, optional): If the activation is that of Transformer block, set this True. Defaults to False.
     """
 
     sns.set_style("ticks")
@@ -177,8 +177,11 @@ def run_cka(
 
         activation_list = []
 
+        # Get activations of model1 and model2, respectvely.
         for _ in range(2):
 
+            # For the first iteration, ues the `variant` defined above (model1).
+            # For the second iteration, ues the `variant` defined below (model2).
             activation = get_activation(
                 variant,
                 state_dim,
@@ -293,10 +296,30 @@ if __name__ == "__main__":
     parser.add_argument("--path_to_save_cka", type=str, default="results")
     parser.add_argument("--path_to_save_figure", type=str, default="figs")
     parser.add_argument("--seed", type=int, default=666)
-    parser.add_argument("--model1", type=str, default="gpt2", help="dt, gpt2, or igpt")
-    parser.add_argument("--model2", type=str, default="gpt2", help="dt, gpt2, or igpt")
-    parser.add_argument("--epoch1", type=int, default=40, help="A model checkpoint to measure CKA similarity.")
-    parser.add_argument("--epoch2", type=int, default=40, help="Another model checkpoint to measure CKA similarity.")
+    parser.add_argument(
+        "--model1",
+        type=str,
+        default="gpt2",
+        help="dt, gpt2, or igpt. A model type to measure CKA similarity.",
+    )
+    parser.add_argument(
+        "--model2",
+        type=str,
+        default="gpt2",
+        help="dt, gpt2, or igpt. Another model type to measure CKA similarity.",
+    )
+    parser.add_argument(
+        "--epoch1",
+        type=int,
+        default=40,
+        help="A model checkpoint to measure CKA similarity.",
+    )
+    parser.add_argument(
+        "--epoch2",
+        type=int,
+        default=40,
+        help="Another model checkpoint to measure CKA similarity.",
+    )
     parser.add_argument("--device", type=str, default="cpu")
     args = parser.parse_args()
     main(vars(args))
