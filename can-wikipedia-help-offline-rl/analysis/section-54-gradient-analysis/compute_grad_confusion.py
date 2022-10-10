@@ -1,3 +1,6 @@
+'''
+Compute, save, and plot the minimum cosine similarity of gradients.
+'''
 import argparse
 import sys
 
@@ -27,9 +30,9 @@ def main(args):
     path_to_save_grad_cossim = args["path_to_save_gradcossim"]
     path_to_save_figure = args["path_to_save_figure"]
 
-    gradcossims_list = []
     min_gradcossims_list = []
 
+    device = torch.device(args["device"])
     for model_name in tqdm(model_names):
 
         torch.manual_seed(seed)
@@ -43,8 +46,6 @@ def main(args):
             dataset_name,
             batch_size=50,
         )
-
-        device = torch.device(args["device"])
 
         state_dim, act_dim, max_ep_len, scale = get_data_info(variant)
         states, actions, rewards, dones, rtg, timesteps, attention_mask = get_batch(
@@ -63,6 +64,7 @@ def main(args):
             attention_mask,
             device,
         )
+        # Compute cosine similarity between gradients of different data samples.
         gradcossim_list = []
         for grads1 in tqdm(grads_list):
             for grads2 in grads_list:
@@ -78,22 +80,8 @@ def main(args):
             gradcossim,
         )
 
-        gradcossims_list.append(gradcossim)
-
-    np.save(
-        f"{path_to_save_grad_cossim}/gradcossim_{epoch}_gpt2_igpt_dt_{env_name}_{dataset_name}_{seed}.npy",
-        gradcossims_list,
-    )
-
-    # We measure gradient confusion by the minimum gradient cosine similarity.
-    min_gradcossims_list = []
-    for model_name in model_names:
-        min_gradcossim = np.min(
-            np.load(
-                f"{path_to_save_grad_cossim}/gradcossim_{epoch}_{model_name}_{env_name}_{dataset_name}_{seed}.npy"
-            )
-        )
-        min_gradcossims_list.append([min_gradcossim])
+        # Measure gradient confusion by the minimum gradient cosine similarity.
+        min_gradcossims_list.append([min(gradcossim_list)])
 
     model_name_label = ["GPT2", "iGPT", "Random Init"]
     colors = [(0.372, 0.537, 0.537), (0.627, 0.352, 0.470), (0.733, 0.737, 0.870)]

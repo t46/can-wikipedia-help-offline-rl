@@ -1,3 +1,6 @@
+'''
+Compute, save, and plot gradient norm.
+'''
 import argparse
 import sys
 
@@ -32,19 +35,19 @@ def main(args):
 
     grad_norms_list = []
 
+    device = torch.device(args["device"])
     for model_name in tqdm(model_names):
 
         variant = generate_variant(
             epoch, path_to_model_checkpoint, model_name, env_name, seed, dataset_name
         )
 
-        device = torch.device(args["device"])
-
         state_dim, act_dim, max_ep_len, scale = get_data_info(variant)
         states, actions, rewards, dones, rtg, timesteps, attention_mask = get_batch(
             variant, state_dim, act_dim, max_ep_len, scale, device, path_to_dataset
         )
 
+        # For iGPT, compute gradient norm per parameter as well. 
         if model_name == "igpt":
             grads_list, grad_norm_per_param = get_gradients_grad_per_norm(
                 variant,
