@@ -174,9 +174,14 @@ if __name__ == "__main__":
     parser.add_argument("--path_to_save_att_dist_diff", type=str)
     parser.add_argument("--path_to_save_figure", type=str)
     parser.add_argument("--seed", type=int, default=666)
-    parser.add_argument("--epoch1", type=int, default=0)
-    parser.add_argument("--epoch2", type=int, default=4)
-    parser.add_argument("--env_name", type=str, default="hopper")
-    parser.add_argument("--dataset_name", type=str, default="medium")
+    parser.add_argument("--epoch1", type=int, default=0, help="A model checkpoint to compare attention distance.")
+    parser.add_argument("--epoch2", type=int, default=4, help="Another model checkpoint to compare attention distance.")
+    parser.add_argument("--env_name", type=str, default="hopper", help="hopper, halfcheetah, or walker2d")
+    parser.add_argument(
+        "--dataset_name",
+        type=str,
+        default="medium",
+        help="Only medium is used for the experiments.",
+    )  # medium, medium-replay, medium-expert, expert
     args = parser.parse_args()
     main(vars(args))

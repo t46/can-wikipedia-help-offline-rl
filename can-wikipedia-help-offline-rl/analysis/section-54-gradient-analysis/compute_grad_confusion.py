@@ -115,8 +115,13 @@ if __name__ == "__main__":
     parser.add_argument("--path_to_save_figure", type=str, default="figs")
     parser.add_argument("--seed", type=int, default=666)
     parser.add_argument("--epoch", type=int, default=1)
-    parser.add_argument("--env_name", type=str, default="hopper")
-    parser.add_argument("--dataset_name", type=str, default="medium")
+    parser.add_argument("--env_name", type=str, default="hopper", help="hopper, halfcheetah, or walker2d")
+    parser.add_argument(
+        "--dataset_name",
+        type=str,
+        default="medium",
+        help="Only medium is used for the experiments.",
+    )  # medium, medium-replay, medium-expert, expert
     parser.add_argument("--device", type=str, default="cpu")
     args = parser.parse_args()
     main(vars(args))
