@@ -72,14 +72,48 @@ def main(variant):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path_to_save_mi", type=str)
-    parser.add_argument("--path_to_data", type=str)
-    parser.add_argument("--path_to_activation", type=str)
-    parser.add_argument("--exp_type", type=str, default="normal")
-    parser.add_argument("--env_name", type=str, default="hopper")
-    parser.add_argument("--dataset_name", type=str, default="medium")
+    parser.add_argument(
+        "--path_to_save_mi",
+        type=str,
+        help="The mutual information stored here will be recalled during the analysis in \
+                            ../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information.",
+    )
+    parser.add_argument(
+        "--path_to_data",
+        type=str,
+        help="This is the path of the stored batch of D4RL data sampled by \
+                        ../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information/save_activation.py.",
+    )
+    parser.add_argument(
+        "--path_to_activation",
+        type=str,
+        help="This is the path of the stored activation extracted by \
+                        ../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information/save_activation.py.",
+    )
+    parser.add_argument(
+        "--exp_type", type=str, default="normal", help="normal or no_context"
+    )
+    parser.add_argument(
+        "--env_name",
+        type=str,
+        default="hopper",
+        help="hopper, halfcheetah, or walker2d",
+    )
+    parser.add_argument(
+        "--dataset_name",
+        type=str,
+        default="medium",
+        help="Only medium is used for the experiments.",
+    )  # medium, medium-replay, medium-expert, expert
     parser.add_argument("--seed", type=int, default=666)
-    parser.add_argument("--epoch", type=int, default=40)
-    parser.add_argument("--model_name", type=str, default="gpt2")
+    parser.add_argument(
+        "--epoch",
+        type=int,
+        default=40,
+        help="The checkpoint for the models with activation to estimate mutual information.",
+    )
+    parser.add_argument(
+        "--model_name", type=str, default="gpt2", help="dt, gpt2, or igpt"
+    )
     args = parser.parse_args()
     main(variant=vars(args))
