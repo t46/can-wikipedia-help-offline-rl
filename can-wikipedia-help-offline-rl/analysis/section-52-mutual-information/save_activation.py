@@ -1,3 +1,6 @@
+"""
+Save sampled D4RL data and model's activation with the data.
+"""
 import argparse
 import sys
 
@@ -33,17 +36,15 @@ def save_data_and_activation(
         env_name_list (list, optional): environment name list. Defaults to ['hopper', 'halfcheetah', 'walker2d'].
     """
 
+    dataset_name = "medium"
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     for env_name in env_name_list:
 
         torch.manual_seed(seed)
 
-        dataset_name = "medium"
-
         variant = generate_variant(
             epoch, path_to_model_checkpoint, model_name, env_name, seed, dataset_name
         )
-
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         state_dim, act_dim, max_ep_len, scale = get_data_info(variant)
         states, actions, rewards, dones, rtg, timesteps, attention_mask = get_batch(
