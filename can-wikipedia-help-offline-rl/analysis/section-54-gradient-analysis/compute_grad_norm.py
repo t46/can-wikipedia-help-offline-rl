@@ -47,7 +47,7 @@ def main(args):
             variant, state_dim, act_dim, max_ep_len, scale, device, path_to_dataset
         )
 
-        # For iGPT, compute gradient norm per parameter as well. 
+        # For iGPT, compute gradient norm per parameter as well.
         if model_name == "igpt":
             grads_list, grad_norm_per_param = get_gradients_grad_per_norm(
                 variant,
@@ -95,6 +95,7 @@ def main(args):
     model_name_label = ["GPT2", "iGPT", "Random Init"]
     colors = [(0.372, 0.537, 0.537), (0.627, 0.352, 0.470), (0.733, 0.737, 0.870)]
 
+    # Compare gradient norm.
     my_palette = sns.color_palette(colors)
     sns.boxplot(data=grad_norms_list, palette=my_palette)
     plt.xticks(np.arange(3), model_name_label)
@@ -104,6 +105,7 @@ def main(args):
         f"{path_to_save_figure}/gradnorms_{epoch}_gpt2_igpt_dt_{env_name}_{dataset_name}_{seed}.pdf"
     )
 
+    # Plot per-parameter gradient norm of iGPT.
     print(
         f"Layers with Large Gradient Norm: {sorted(grad_norm_per_param, key=grad_norm_per_param.get, reverse=True)[:2]}"
     )
@@ -123,7 +125,8 @@ def main(args):
         f"{path_to_save_figure}/gradnorm_perparam_{epoch}_igpt_{env_name}_{dataset_name}_{seed}.pdf"
     )
 
-    # Since we observe that for iGPT gradient norms of '0.ln_1.weight' and '0.ln_1.bias' are by far larger than the others, we study how much of the total is accounted for by them.
+    # Since we observe that for iGPT gradient norms of '0.ln_1.weight' and '0.ln_1.bias' are by far larger than
+    # the others, we study how much of the total is accounted for by them.
     grad_norm_0ln_others = {"0.ln_1.weight": 0, "0.ln_1.bias": 0, "others": 0}
     total = np.sum(list(grad_norm_per_param.values()))
     for key, value in grad_norm_per_param.items():
@@ -135,7 +138,6 @@ def main(args):
     total = np.sum(grad_norm_0ln_others.values())
 
     df_others = pd.DataFrame([grad_norm_0ln_others]).astype(float)
-    x = np.linspace(0, 1, len(grad_norm_0ln_others))
     df_others.plot.barh(
         stacked=True,
         figsize=(10, 6.7),
