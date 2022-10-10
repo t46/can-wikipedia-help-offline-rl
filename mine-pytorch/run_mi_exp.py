@@ -1,14 +1,11 @@
+"""
+Run mutual information estimation experiment.
+"""
 import argparse
 
-import numpy as np
-from tqdm import tqdm
-
 from util_mi_calculation import load_data_and_activation
-from util_to_save_mi import (
-    run_to_save_mi,
-    run_to_save_mi_data,
-    run_to_save_mi_no_context,
-)
+from util_to_save_mi import (run_to_save_mi, run_to_save_mi_data,
+                             run_to_save_mi_no_context)
 
 device = "cuda"
 
@@ -91,7 +88,13 @@ if __name__ == "__main__":
                         ../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information/save_activation.py.",
     )
     parser.add_argument(
-        "--exp_type", type=str, default="normal", help="normal or no_context"
+        "--exp_type",
+        type=str,
+        default="normal",
+        help="normal, no_context, or data. \
+             `normal` is for mutual information b/w activation and data of the current and past time steps, \
+             `no_context` for that b/w the activation and data of the current time step, \
+             and `data` for that b/w the different input toke type of the same data.",
     )
     parser.add_argument(
         "--env_name",
