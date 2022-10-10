@@ -96,13 +96,15 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path_to_load_data", type=str)
-    parser.add_argument("--path_to_load_model", type=str)
-    parser.add_argument("--path_to_save_data", type=str)
-    parser.add_argument("--path_to_save_activation", type=str)
+    parser.add_argument("--path_to_load_data", type=str, default="../../data")
+    parser.add_argument("--path_to_load_model", type=str, default="../../checkpoints")
+    parser.add_argument("--path_to_save_data", type=str, default="results")
+    parser.add_argument("--path_to_save_activation", type=str, default="results")
     parser.add_argument("--seed", type=int, default=666)
     parser.add_argument("--epoch", type=int, default=40)
-    parser.add_argument("--model_name", type=str, default="gpt2")
+    parser.add_argument(
+        "--model_name", type=str, default="gpt2", help="dt, gpt2, or igpt"
+    )
     parser.add_argument(
         "--env_name_list", nargs="+", default=["hopper", "halfcheetah", "walker2d"]
     )
