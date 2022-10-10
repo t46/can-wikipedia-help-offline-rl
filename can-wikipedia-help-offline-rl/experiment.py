@@ -190,13 +190,13 @@ def experiment(
             si = random.randint(0, traj["rewards"].shape[0] - 1)
 
             # get sequences from dataset
-            s.append(traj["observations"][si: si + max_len].reshape(1, -1, state_dim))
-            a.append(traj["actions"][si: si + max_len].reshape(1, -1, act_dim))
-            r.append(traj["rewards"][si: si + max_len].reshape(1, -1, 1))
+            s.append(traj["observations"][si : si + max_len].reshape(1, -1, state_dim))
+            a.append(traj["actions"][si : si + max_len].reshape(1, -1, act_dim))
+            r.append(traj["rewards"][si : si + max_len].reshape(1, -1, 1))
             if "terminals" in traj:
-                d.append(traj["terminals"][si: si + max_len].reshape(1, -1))
+                d.append(traj["terminals"][si : si + max_len].reshape(1, -1))
             else:
-                d.append(traj["dones"][si: si + max_len].reshape(1, -1))
+                d.append(traj["dones"][si : si + max_len].reshape(1, -1))
             timesteps.append(np.arange(si, si + s[-1].shape[1]).reshape(1, -1))
             timesteps[-1][timesteps[-1] >= max_ep_len] = (
                 max_ep_len - 1
@@ -261,6 +261,7 @@ def experiment(
         Args:
             target_rew (_type_): Evaluation conditioning target
         """
+
         def fn(model):
             returns, lengths = [], []
             for _ in range(num_eval_episodes):
@@ -425,14 +426,21 @@ def experiment(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--env", type=str, default="hopper")
     parser.add_argument(
-        "--dataset", type=str, default="medium"
+        "--env", type=str, default="hopper", help="hopper, halfcheetah, or walker2d"
+    )
+    parser.add_argument(
+        "--dataset",
+        type=str,
+        default="medium",
+        help="Only medium is used for the experiments.",
     )  # medium, medium-replay, medium-expert, expert
     parser.add_argument(
         "--mode", type=str, default="normal"
     )  # normal for standard setting, delayed for sparse
-    parser.add_argument("--K", type=int, default=20)
+    parser.add_argument(
+        "--K", type=int, default=20, help="--K 1 for no context experiments."
+    )
     parser.add_argument("--pct_traj", type=float, default=1.0)
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument(
@@ -454,7 +462,12 @@ if __name__ == "__main__":
     parser.add_argument("--num_steps_per_iter", type=int, default=2500)
 
     parser.add_argument("--device", type=str, default="cuda")
-    parser.add_argument("--pretrained_lm", type=str, default=None)
+    parser.add_argument(
+        "--pretrained_lm",
+        type=str,
+        default=None,
+        help="gpt2 or igpt. The model without this option corresponds to randomly initialized model.",
+    )
     parser.add_argument("--load_checkpoint", type=str, default=None)
     parser.add_argument("--log_to_wandb", "-w", action="store_true", default=False)
 
@@ -471,9 +484,20 @@ if __name__ == "__main__":
     parser.add_argument("--share_input_output_proj", action="store_true", default=False)
     parser.add_argument("--kmeans_mean", action="store_true", default=False)
 
-    parser.add_argument("--remove_grad_clip", action="store_true", default=False)
+    parser.add_argument(
+        "--remove_grad_clip",
+        action="store_true",
+        default=False,
+        help="This is only for G.3 Analysis of the Effect of Gradient Clipping",
+    )
     parser.add_argument("--data_path", type=str, default="data")
-    parser.add_argument("--pretrained_block", type=int, default=None)
+    parser.add_argument(
+        "--pretrained_block",
+        type=int,
+        default=None,
+        help="This is for block replacement experiment. The value ranges from 0 to 11. \
+                              When using this option, use --pretrained_lm gpt2.",
+    )
 
     args = parser.parse_args()
 
