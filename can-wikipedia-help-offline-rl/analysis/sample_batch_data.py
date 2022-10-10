@@ -170,13 +170,13 @@ def get_batch(variant, state_dim, act_dim, max_ep_len, scale, device, path_to_da
         si = random.randint(0, traj["rewards"].shape[0] - 1)
 
         # get sequences from dataset
-        s.append(traj["observations"][si : si + max_len].reshape(1, -1, state_dim))
-        a.append(traj["actions"][si : si + max_len].reshape(1, -1, act_dim))
-        r.append(traj["rewards"][si : si + max_len].reshape(1, -1, 1))
+        s.append(traj["observations"][si: si + max_len].reshape(1, -1, state_dim))
+        a.append(traj["actions"][si: si + max_len].reshape(1, -1, act_dim))
+        r.append(traj["rewards"][si: si + max_len].reshape(1, -1, 1))
         if "terminals" in traj:
-            d.append(traj["terminals"][si : si + max_len].reshape(1, -1))
+            d.append(traj["terminals"][si: si + max_len].reshape(1, -1))
         else:
-            d.append(traj["dones"][si : si + max_len].reshape(1, -1))
+            d.append(traj["dones"][si: si + max_len].reshape(1, -1))
         timesteps.append(np.arange(si, si + s[-1].shape[1]).reshape(1, -1))
         timesteps[-1][timesteps[-1] >= max_ep_len] = max_ep_len - 1  # padding cutoff
         rtg.append(
