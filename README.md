@@ -183,11 +183,15 @@ The notebook for comparing mutual information of different data type is in `anal
 - `mutual_information_data.ipynb`
   - Plot Figure 22.
 
-1. Run the command below
+1. Run `run_mi_exp.py` with `--exp_type data` option.
     ```
     cd mine-pytorch
     conda activate mine
-    python run_mi_exp.py --path_to_save_mi YOUR_SAVE_PATH --path_to_data YOUR_DATA_PATH --path_to_activation YOUR_ACTIVATION_PATH --exp_type data 
+    python run_mi_exp.py \
+    --path_to_save_mi YOUR_SAVE_PATH \
+    --path_to_data YOUR_DATA_PATH \
+    --path_to_activation YOUR_ACTIVATION_PATH \
+    --exp_type data 
     conda deactivate mine
     cd ../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information
     ```

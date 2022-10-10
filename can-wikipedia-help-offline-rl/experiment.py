@@ -304,6 +304,9 @@ def experiment(
 
         return fn
 
+    # Wehn pretrained_block is not None, first instantiate the pre-trained model as `model_pretrained` and then
+    # instantiate the randomly initialized model as `model`.
+    # After that, a transformer block of `model` is replaced by that of `model_pretrained`.
     if pretrained_block:
         if model_type == "dt":
             model_pretrained = DecisionTransformer(
@@ -336,6 +339,7 @@ def experiment(
         else:
             raise NotImplementedError
 
+        # To instantiate the randomly initialized model, turn off `pretrained_lm` option.
         variant["pretrained_lm"] = False
 
     if model_type == "dt":
@@ -370,9 +374,10 @@ def experiment(
         raise NotImplementedError
 
     if pretrained_block:
-        for i in range(12):
+        for i in range(12):  # `model` (dt) and `model_pretrained` (gpt2) have 12 Transformer blocks.
             if i == pretrained_block:
                 model.transformer.h[i] = model_pretrained.transformer.h[i]
+                # model.transformer.h[i] is the i-th Transformer block of `model`.
 
     model = model.to(device=device)
 

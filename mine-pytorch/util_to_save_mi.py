@@ -1,3 +1,6 @@
+'''
+Utility function to run the mutual information estimation experiment and save the mutual information.
+'''
 import numpy as np
 from tqdm import tqdm
 
@@ -17,6 +20,21 @@ def run_to_save_mi(
     actions,
     activations,
 ):
+    """Run the experiment to save the estimated mutual informaiton.
+
+    Args:
+        path_to_save_mi (str): Path to save the estimated mutual information.
+        env_name (str): hopper, halfcheetah, or walker2d.
+        dataset_name (str): medirum, expert, or random.
+        seed (int): Random seed.
+        epoch (int): Model checkpoint.
+        model_name (str): dt, gpt2, or igpt.
+        device (str): cpu/cuda.
+        rtg (np.ndarray): Return-to-go.
+        states (np.ndarray): States.
+        actions (np.ndarray): Actions.
+        activations (np.ndarray): Activations.
+    """
     if model_name == "igpt":
         keys = ["0.mlp.dropout", "12.mlp.dropout", "23.mlp.dropout"]
     else:
@@ -30,23 +48,23 @@ def run_to_save_mi(
         activation = value.to(device)
 
         mi_dict[key] = []
-        x_mi_list = []
-        y_mi_list = []
+        x_mi_list = []  # Mutual information I(X; T) b/w input data X and activation.
+        y_mi_list = []  # Mutual information I(Y; T) b/w label data Y and activation.
         for step in tqdm(range(states.shape[1])):
             for i in range(3):
                 if (step == states.shape[1] - 1) and i == 2:  # Exclude action of K=1
                     pass
-                else:
+                else:  # Input to decision transformer is tuple of (R, s, a, R, s, a, ...)
                     if i == 0:
-                        rsa = rtg
+                        input_data = rtg
                     elif i == 1:
-                        rsa = states
+                        input_data = states
                     else:
-                        rsa = actions
+                        input_data = actions
 
                     try:
                         x_mi = (
-                            calc_mi(rsa[:, step, :], activation[:, -2, :], device)
+                            calc_mi(input_data[:, step, :], activation[:, -2, :], device)
                             .cpu()
                             .numpy()
                         )  # I(X; T)
@@ -89,16 +107,32 @@ def run_to_save_mi_no_context(
     actions,
     activations,
 ):
+    """Run the experiment to save the estimated mutual informaiton b/w data and activation of the current step.
+
+    Args:
+        path_to_save_mi (str): Path to save the estimated mutual information.
+        env_name (str): hopper, halfcheetah, or walker2d.
+        dataset_name (str): medirum, expert, or random.
+        seed (int): Random seed.
+        epoch (int): Model checkpoint.
+        model_name (str): dt, gpt2, or igpt.
+        device (str): cpu/cuda.
+        rtg (np.ndarray): Return-to-go.
+        states (np.ndarray): States.
+        actions (np.ndarray): Actions.
+        activations (np.ndarray): Activations.
+    """
     mi_dict = {}
 
     for key, value in tqdm(activations.items()):
         if "mlp.dropout" in key:
             activation = value.to(device)
             mi_dict[key] = []
-            state_mi_list = []
-            action_mi_list = []
+            state_mi_list = []  # Mutual information I(X; T) b/w state and activation.
+            action_mi_list = []  # Mutual information I(Y; T) b/w action and activation.
             for step in tqdm(range(states.shape[1])):
                 try:
+                    # Input to decision transformer is tuple of (R, s, a, R, s, a, ...)
                     state_mi = (
                         calc_mi(
                             states[:, step, :], activation[:, 3 * step + 1, :], device
@@ -134,8 +168,20 @@ def run_to_save_mi_no_context(
 def run_to_save_mi_data(
     path_to_save_mi, env_name, dataset_name, seed, device, rtg, states, actions
 ):
-    mi_state_action_list = []
-    mi_rtg_action_list = []
+    """Run the experiment to save the estimated mutual informaiton b/w data.
+
+    Args:
+        path_to_save_mi (str): Path to save the estimated mutual information.
+        env_name (str): hopper, halfcheetah, or walker2d.
+        dataset_name (str): medirum, expert, or random.
+        seed (int): Random seed.
+        device (str): cpu/cuda.
+        rtg (np.ndarray): Return-to-go.
+        states (np.ndarray): States.
+        actions (np.ndarray): Actions.
+    """
+    mi_state_action_list = []  # Mutual information b/w state and action.
+    mi_rtg_action_list = []  # Mutual information b/w return-to-go and action.
     for step in tqdm(range(states.shape[1])):
         try:
             mi_state_action = calc_mi(states[:, step, :], actions[:, step, :], device)

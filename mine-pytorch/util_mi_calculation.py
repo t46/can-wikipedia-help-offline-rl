@@ -1,3 +1,6 @@
+'''
+Utility functions to calculate mutual information.
+'''
 import numpy as np
 import torch
 import torch.nn as nn
@@ -6,6 +9,16 @@ from mine.models.mine import Mine
 
 
 def calc_mi(X, Y, device):
+    """Estimate mutual information by MINE
+
+    Args:
+        X (torch.Tensor): Observed value of a random variable.
+        Y (torch.Tensor): Observed value of another random variable.
+        device (str): cpu/cuda.
+
+    Returns:
+        torch.Tensor: Estimated mutual information.
+    """
     x_dim = X.shape[1]
     y_dim = Y.shape[1]
 
@@ -46,6 +59,21 @@ def load_data_and_activation(
     model_name,
     device,
 ):
+    """Load D4RL data and activation.
+
+    Args:
+        path_to_d4rl_data_sample (str): Path to load D4RL data sample.
+        path_to_activation (str): Path to load activation with the data.
+        env_name (str): hopper, halfcheetah, or walker2d.
+        dataset_name (str): medium, expert, or random.
+        seed (int): Random seed.
+        epoch (int): Model checkpoint.
+        model_name (str): dt, gpt2, or igpt.
+        device (str): cpu/cuda.
+
+    Returns:
+        tuple: return-to-go, states, actions, activations
+    """
     data = np.load(
         f"{path_to_d4rl_data_sample}/data_{env_name}_{dataset_name}_{seed}.npy",
         allow_pickle=True,

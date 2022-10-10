@@ -199,7 +199,6 @@ def get_gradients(
     grads_list = []
 
     for batch_id in tqdm(range(variant["batch_size"])):
-        ##### 勾配計算 #####
         action_target_batch = action_target[batch_id, :, :].unsqueeze(0)
 
         state_preds, action_preds, reward_preds, all_embs = model.forward(
@@ -299,7 +298,6 @@ def get_gradients_grad_per_norm(
     grads_list = []
 
     for batch_id in tqdm(range(variant["batch_size"])):
-        ##### 勾配計算 #####
         action_target_batch = action_target[batch_id, :, :].unsqueeze(0)
 
         state_preds, action_preds, reward_preds, all_embs = model.forward(
