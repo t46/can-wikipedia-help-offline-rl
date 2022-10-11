@@ -102,13 +102,13 @@ For the results of Section 5.5 and 5.6.2 (context K=1), just add `--K 1` option.
 
 ## Analysis
 The codes for all analyses, except for the mutual information estimation, are under `can-wikipedia-help-offline-rl/analysis`. For those that require data sampling for analysis, we provide python scripts in addition to jupyter notebooks. Both scripts and notebooks perform the same analysis.
-### 5.1 Similarity Analysis
+### 5.1 Activation Similarity
 The script and notebooks for activation similarity analisis are in `analysis/section-51-activation-similarity`.
 - `compute_cka.ipynb` (`compute_cka.py`)
   - Compute CKA between activations of two models, which output the CKA values used to plot Figure.1.
 - `plot_cka.ipynb`
   - Plot Figure.1 from the CKA values save in `compute-cka.ipynb`.
-### 5.2 Mutual Information
+### 5.2 Mutual Information Between Hidden Representation and Data
 The code to run mutual information estimateion by MINE is in `mine-pytorch` and the notebook and script for activation similarity analisis are in `analysis/section-52-mutual-information`
 
 - `mutual_information.ipynb`
