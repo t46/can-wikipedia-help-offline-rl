@@ -103,12 +103,14 @@ For the results of Section 5.5 and 5.6.2 (context K=1), just add `--K 1` option.
 ## Analysis
 The codes for all analyses, except for the mutual information estimation, are under `can-wikipedia-help-offline-rl/analysis`. For those that require data sampling for analysis, we provide python scripts in addition to jupyter notebooks. Both scripts and notebooks perform the same analysis.
 ### 5.1 Activation Similarity
+![image info](./figs/section51.png)
 The script and notebooks for activation similarity analisis are in `analysis/section-51-activation-similarity`.
 - `compute_cka.ipynb` (`compute_cka.py`)
   - Compute CKA between activations of two models, which output the CKA values used to plot Figure.1.
 - `plot_cka.ipynb`
   - Plot Figure.1 from the CKA values save in `compute-cka.ipynb`.
 ### 5.2 Mutual Information Between Hidden Representation and Data
+![image info](./figs/section52.png)
 The code to run mutual information estimateion by MINE is in `mine-pytorch` and the notebook and script for activation similarity analisis are in `analysis/section-52-mutual-information`
 
 - `mutual_information.ipynb`
@@ -133,22 +135,27 @@ The steps for mutual information estimation are following:
 
 3. Run `mutual_information.ipynb` to plot the figure.
 ### 5.3 Parameter Similarity
+![image info](./figs/section53.png)
 The notebook for activation similarity analisis is in `analysis/section-53-parameter-similarity`.
 - `parameter_similarity_analysis.ipynb`
   - Compute parameter similarity and plot Figures 3 and 4.
 ### 5.4 Gradient Analysis
+![image info](./figs/section54.png)
 The notebooks and scripts for gradient analisis are in `analysis/section-54-gradient-analysis`.
 - `grad_confusion.ipynb` (`compute_grad_confusion.py`)
   - Plot Figure 5.
 - `grad_norm.ipynb` (`compute_grad_norm.py`)
   - Plot Figures 6 and 7.
 ### 5.5 Fine-Tuning With No Context Information
-The notebook to plot the results of fine-tuning with no context is in `analysis/section-55-fine-tuning-no-context`.
+![image info](./figs/section55.png)
+![image info](./figs/section561.png)
+tebook to plot the results of fine-tuning with no context is in `analysis/section-55-fine-tuning-no-context`.
 - `plot_learning_curve_no_context.ipynb`
   - Plot Figures 8 and 9
     - Note that Figure 9 is created by this notebook, though Figure 9 is in Section 5.6.
   - Obtain the result to create Table 2.
 ### 5.6 More In-Depth Analysis of Context Dependence
+![image info](./figs/section562.png)
 The notebook and script for attention distance analisis are in `analysis/section-56-dependence-on-context`.
 - `attention_distance.ipynb` (`compute_attention_distance.py`)
   - Plot Figure 10.
@@ -157,6 +164,7 @@ The notebook and script for attention distance analisis are in `analysis/section
 The following two analyses are done during rebuttal period, the result of which are in Appendix.
 
 ### G.3 Analysis of the Effect of Gradient Clipping
+![image info](./figs/appendixg3.png)
 Run `experiment.py` with `--remove-grad-clip` option.
 ```{sh}
 python experiment.py \
@@ -178,6 +186,7 @@ Then, plot the figures in the jupyter notebook. The notebook for this analysis i
   - Plot Figures 19 and 20.
 
 ### H.2 Analysis of Why Randomly Initialized Model Fails for Hopper with No Context
+![image info](./figs/appendixh2.png)
 The notebook for comparing mutual information of different data type is in `analysis/section-52-mutual-information`.
 
 - `mutual_information_data.ipynb`
