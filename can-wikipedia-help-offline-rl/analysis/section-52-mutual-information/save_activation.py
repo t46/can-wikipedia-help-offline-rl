@@ -3,6 +3,7 @@ Save sampled D4RL data and model's activation with the data.
 """
 import argparse
 import sys
+import os
 
 import numpy as np
 import torch
@@ -35,6 +36,9 @@ def save_data_and_activation(
         epoch (int, optional): 0 or 40. Defaults to 40.
         env_name_list (list, optional): environment name list. Defaults to ['hopper', 'halfcheetah', 'walker2d'].
     """
+
+    os.makedirs(path_to_save_d4rl_data_sample, exist_ok=True)
+    os.makedirs(path_to_save_activation, exist_ok=True)
 
     dataset_name = "medium"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

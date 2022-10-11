@@ -4,6 +4,7 @@ Compute, plot and save CKA.
 
 import argparse
 import sys
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -150,6 +151,9 @@ def run_cka(
         no_context (bool, optional): If True, compute CKA of K=1. Defaults to False.
         device (str): cuda or cpu
     """
+
+    os.makedirs(path_to_save_cka, exist_ok=True)
+    os.makedirs(path_to_save_figure, exist_ok=True)
 
     dataset_name = "medium"
     device = torch.device(device)

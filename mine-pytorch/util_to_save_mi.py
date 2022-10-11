@@ -2,6 +2,7 @@
 Utility function to run the mutual information estimation experiment and save the mutual information.
 '''
 import numpy as np
+import os
 from tqdm import tqdm
 
 from util_mi_calculation import calc_mi
@@ -35,6 +36,8 @@ def run_to_save_mi(
         actions (np.ndarray): Actions.
         activations (np.ndarray): Activations.
     """
+    os.makedirs(path_to_save_mi, exist_ok=True)
+
     if model_name == "igpt":
         keys = ["0.mlp.dropout", "12.mlp.dropout", "23.mlp.dropout"]
     else:
@@ -122,6 +125,8 @@ def run_to_save_mi_no_context(
         actions (np.ndarray): Actions.
         activations (np.ndarray): Activations.
     """
+    os.makedirs(path_to_save_mi, exist_ok=True)
+
     mi_dict = {}
 
     for key, value in tqdm(activations.items()):
@@ -180,6 +185,8 @@ def run_to_save_mi_data(
         states (np.ndarray): States.
         actions (np.ndarray): Actions.
     """
+    os.makedirs(path_to_save_mi, exist_ok=True)
+
     mi_state_action_list = []  # Mutual information b/w state and action.
     mi_rtg_action_list = []  # Mutual information b/w return-to-go and action.
     for step in tqdm(range(states.shape[1])):

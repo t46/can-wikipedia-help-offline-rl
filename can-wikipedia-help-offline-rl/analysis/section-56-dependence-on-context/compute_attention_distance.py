@@ -1,5 +1,9 @@
+'''
+Compute, save, and plot the difference in attention distance.
+'''
 import argparse
 import sys
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -30,6 +34,9 @@ def main(args):
     path_to_save_att_dist_diff = args["path_to_save_att_dist_diff"]
     path_to_save_figure = args["path_to_save_figure"]
 
+    os.makedirs(path_to_save_att_dist_diff, exist_ok=True)
+    os.makedirs(path_to_save_figure, exist_ok=True)
+
     att_dist_diff_abs_list = []
 
     for model_name in tqdm(models):
@@ -47,9 +54,12 @@ def main(args):
             variant, state_dim, act_dim, max_ep_len, scale, device, path_to_dataset
         )
 
+        # Get activations of epoch1 and epoch1, respectvely.
         att_dist_mat_list = []
         for _ in tqdm(range(2)):
 
+            # For the first iteration, ues the `variant` defined above (epoch1).
+            # For the second iteration, ues the `variant` defined below (epoch2).
             activation = get_activation(
                 variant,
                 state_dim,
@@ -130,7 +140,7 @@ def main(args):
                 att_dist_diff_abs_normalized_persample = []
                 for i in range(att_dist_diff_abs_normalized.shape[1]):
                     att_dist_diff_abs_normalized_persample.append(
-                        att_dist_diff_abs[batch_id, i * 2 : (i + 1) * 2].mean()
+                        att_dist_diff_abs[batch_id, i * 2: (i + 1) * 2].mean()
                     )
                 att_dist_diff_abs_normalized[
                     batch_id, :
@@ -169,10 +179,10 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path_to_load_data", type=str)
-    parser.add_argument("--path_to_load_model", type=str)
-    parser.add_argument("--path_to_save_att_dist_diff", type=str)
-    parser.add_argument("--path_to_save_figure", type=str)
+    parser.add_argument("--path_to_load_data", type=str, default="../../data")
+    parser.add_argument("--path_to_load_model", type=str, default="../../checkpoints")
+    parser.add_argument("--path_to_save_att_dist_diff", type=str, default="results")
+    parser.add_argument("--path_to_save_figure", type=str, default="figs")
     parser.add_argument("--seed", type=int, default=666)
     parser.add_argument("--epoch1", type=int, default=0, help="A model checkpoint to compare attention distance.")
     parser.add_argument("--epoch2", type=int, default=4, help="Another model checkpoint to compare attention distance.")
