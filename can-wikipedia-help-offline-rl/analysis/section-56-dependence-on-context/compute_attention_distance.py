@@ -39,6 +39,7 @@ def main(args):
 
     att_dist_diff_abs_list = []
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     for model_name in tqdm(models):
 
         torch.manual_seed(seed)
@@ -46,8 +47,6 @@ def main(args):
         variant = generate_variant(
             epoch1, path_to_model_checkpoint, model_name, env_name, seed, dataset_name
         )
-
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         state_dim, act_dim, max_ep_len, scale = get_data_info(variant)
         states, actions, rewards, dones, rtg, timesteps, attention_mask = get_batch(
