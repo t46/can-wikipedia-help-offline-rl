@@ -3,6 +3,7 @@ Compute, save, and plot the minimum cosine similarity of gradients.
 '''
 import argparse
 import sys
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,6 +30,9 @@ def main(args):
     path_to_model_checkpoint = args["path_to_load_model"]
     path_to_save_grad_cossim = args["path_to_save_gradcossim"]
     path_to_save_figure = args["path_to_save_figure"]
+
+    os.makedirs(path_to_save_grad_cossim, exist_ok=True)
+    os.makedirs(path_to_save_figure, exist_ok=True)
 
     min_gradcossims_list = []
 

@@ -3,6 +3,7 @@ Compute, save, and plot gradient norm.
 '''
 import argparse
 import sys
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -30,6 +31,9 @@ def main(args):
     path_to_model_checkpoint = args["path_to_load_model"]
     path_to_save_gradnorm = args["path_to_save_gradnorm"]
     path_to_save_figure = args["path_to_save_figure"]
+
+    os.makedirs(path_to_save_gradnorm, exist_ok=True)
+    os.makedirs(path_to_save_figure, exist_ok=True)
 
     torch.manual_seed(seed)
 
