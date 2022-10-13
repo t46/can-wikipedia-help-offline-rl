@@ -54,8 +54,8 @@ def experiment(
         NotImplementedError: Model type is not implemented.
 
     """
-    assert (variant["pretrained_lm"] != "gpt2") and (
-        variant["pretrained_block"] is not None
+    assert (variant["pretrained_lm"] == "gpt2") or (
+        variant["pretrained_block"] is None
     )
     # NOTE: When variant["pretrained_lm"] == False,
     # NOTE: a Transformer block of rand-init model is just replaced by that of another rand-init model.
