@@ -96,7 +96,7 @@ python experiment.py \
 --n_layer 12 \
 -w
 ```
-For pre-trained models, add `--pretrained_lm gpt2` for *language-pre-trained model (GPT2)* and `--pretrained_lm openai/imagegpt-small` for *image-pre-trained model (iGPT)*. Running command above outputs per epoch i) fine-tuned models under `./checkpoints` directory, i.e. `checkpoints/dt_medium_hopper_666/model_40.pt` and ii) results such as mean return and action error to wandb. For sanity check in Section 4, run `sanity_check_preformance.ipynb` after running the above command (Table 1). Run the command for all environments (`--env`: `hopper`, `halfcheetah`, and `walker2d`) and all types of models (`--pretrained_lm`: "not added", `gpt2`, and `igpt` ), respectively.
+For pre-trained models, add `--pretrained_lm gpt2` for *language-pre-trained model (GPT2)* and `--pretrained_lm openai/imagegpt-small` for *image-pre-trained model (iGPT)*. Running command above outputs per epoch i) fine-tuned models under `./checkpoints` directory, i.e. `checkpoints/dt_medium_hopper_666/model_40.pt` and ii) results such as mean return and action error to wandb. For sanity check in Section 4, run `sanity_check_preformance.ipynb` after running the above command (Table 1). Run the command for all environments (`--env`: `hopper`, `halfcheetah`, and `walker2d`) and all types of models (`--pretrained_lm`: "not added", `gpt2`, and `openai/imagegpt-small` ), respectively.
 
 For the results of Section 5.5 and 5.6.2 (context K=1), just add `--K 1` option. For block replacement experiment (Section 5.6.1), In addition to `--K 1`, add `--pretrained_block {replaced_block_id}` and `--max_iters 10`. You run the command for all environments (`--env`: `hopper`, `halfcheetah`, and `walker2d`), two types of pre-trained models (`--pretrained_lm`: "not added" and `gpt2`), and all block ids (`--pretrained_block`: 0, ..., 11) respectively.
 
@@ -165,13 +165,13 @@ The following two analyses are done during rebuttal period, the result of which 
 
 ### G.3 Analysis of the Effect of Gradient Clipping
 ![image info](./figs/appendixg3.png)
-Run `experiment.py` with `--remove-grad-clip` option.
+Run `experiment.py` with `--remove_grad_clip` option.
 ```{sh}
 python experiment.py \
 --env hopper \
 --dataset medium \
 --model_type dt \
---pretrained_lm igpt
+--pretrained_lm openai/imagegpt-small \
 --seed 666 \
 --outdir checkpoints \
 --dropout 0.2 \
@@ -179,7 +179,7 @@ python experiment.py \
 --warmup_steps 5000 \
 -w \
 --max_iters 10 \
---remove-grad-clip 
+--remove_grad_clip 
 ```
 Then, plot the figures in the jupyter notebook. The notebook for this analysis is in `analysis/section-54-gradient-analysis`.
 - `plot_learning_curve_grad_clip.ipynb`

@@ -67,6 +67,8 @@ def experiment(
 
     if (variant["pretrained_lm"] is None) or (pretrained_block is not None):
         model_name = "dt"
+    elif variant["pretrained_lm"] == "openai/imagegpt-small":
+        model_name = "igpt"
     else:
         model_name = variant["pretrained_lm"]
     exp_name = f"{group_name}-{model_name}-{seed}"
@@ -78,7 +80,7 @@ def experiment(
     if variant["remove_grad_clip"]:
         exp_name += "-no-grad-clip"
         out_dir += "_no_grad_clip"
-    if pretrained_block:
+    if pretrained_block is not None:
         exp_name += f"-block{pretrained_block}"
         out_dir += f"_block{pretrained_block}"
 
@@ -471,13 +473,13 @@ if __name__ == "__main__":
         "--pretrained_lm",
         type=str,
         default=None,
-        help="gpt2 or igpt. The model without this option corresponds to randomly initialized model.",
+        help="gpt2 or openai/imagegpt-small. The model without this option corresponds to randomly initialized model.",
     )
     parser.add_argument("--load_checkpoint", type=str, default=None)
     parser.add_argument("--log_to_wandb", "-w", action="store_true", default=False)
 
     parser.add_argument("--seed", type=int, default=666)
-    parser.add_argument("--outdir", type=str, default=None)
+    parser.add_argument("--outdir", type=str, default="checkpoints")
     parser.add_argument("--fp16", action="store_true", default=False)
 
     parser.add_argument("--frozen", action="store_true", default=False)
