@@ -1,10 +1,14 @@
 
 # On the Effect of Pre-training for Transformer in Different Modality on Offline Reinforcement Learning 
-This repository contains the code for *On the Effect of Pre-training for Transformer in Different Modality on Offline Reinforcement Learning*. Most of our code is based on the following repositories:
+This repository contains the code for *"On the Effect of Pre-training for Transformer in Different Modality on Offline Reinforcement Learning"*. The LaTeX source for our paper is availabe at https://github.com/t46/paper-pre-training-different-modality-offline-rl.
+
+Most of our code is based on the following repositories:
 - https://github.com/machelreid/can-wikipedia-help-offline-rl
   - https://github.com/rail-berkeley/d4rl
 - https://github.com/gtegner/mine-pytorch
 - https://github.com/google-research/google-research/tree/master/representation_similarity
+
+We sincerely thank the contributors for making the code available to us. Our research would not have been possible without these codes.
 
 The primary files and directories used to generate the results of the paper are the following:
 ```
@@ -108,7 +112,7 @@ The script and notebooks for activation similarity analisis are in `analysis/sec
 - `compute_cka.ipynb` (`compute_cka.py`)
   - Compute CKA between activations of two models, which output the CKA values used to plot Figure.1.
 - `plot_cka.ipynb`
-  - Plot Figure.1 from the CKA values save in `compute-cka.ipynb`.
+  - Plot Figure.1 from the CKA values save in `compute_cka.ipynb`.
 ### 5.2 Mutual Information Between Hidden Representation and Data
 ![image info](./figs/section52.png)
 The code to run mutual information estimateion by MINE is in `mine-pytorch` and the notebook and script for activation similarity analisis are in `analysis/section-52-mutual-information`
