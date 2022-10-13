@@ -488,6 +488,7 @@ if __name__ == "__main__":
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument(
         "--pretrained_lm",
+        "-plm",
         type=str,
         default=None,
         help="gpt2 or openai/imagegpt-small. The model without this option corresponds to randomly initialized model.",
@@ -536,6 +537,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--remove_grad_clip",
+        "-rgc",
         action="store_true",
         default=False,
         help="This is only for G.3 Analysis of the Effect of Gradient Clipping.",
@@ -543,6 +545,7 @@ if __name__ == "__main__":
     parser.add_argument("--data_path", type=str, default="data")
     parser.add_argument(
         "--pretrained_block",
+        "-pb",
         type=int,
         default=None,
         help="This is for block replacement experiment. The value ranges from 0 to 11. \

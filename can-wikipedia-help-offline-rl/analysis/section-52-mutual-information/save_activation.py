@@ -101,10 +101,10 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path_to_load_data", type=str, default="../../data")
-    parser.add_argument("--path_to_load_model", type=str, default="../../checkpoints")
-    parser.add_argument("--path_to_save_data", type=str, default="results")
-    parser.add_argument("--path_to_save_activation", type=str, default="results")
+    parser.add_argument("--path_to_load_data", "-pld", type=str, default="../../data")
+    parser.add_argument("--path_to_load_model", "-plm", type=str, default="../../checkpoints")
+    parser.add_argument("--path_to_save_data", "-psd", type=str, default="results")
+    parser.add_argument("--path_to_save_activation", "-psa", type=str, default="results")
     parser.add_argument("--seed", type=int, default=666)
     parser.add_argument("--epoch", type=int, default=40)
     parser.add_argument(

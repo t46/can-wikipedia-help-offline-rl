@@ -178,10 +178,10 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path_to_load_data", type=str, default="../../data")
-    parser.add_argument("--path_to_load_model", type=str, default="../../checkpoints")
-    parser.add_argument("--path_to_save_att_dist_diff", type=str, default="results")
-    parser.add_argument("--path_to_save_figure", type=str, default="figs")
+    parser.add_argument("--path_to_load_data", "-pld", type=str, default="../../data")
+    parser.add_argument("--path_to_load_model", "-plm", type=str, default="../../checkpoints")
+    parser.add_argument("--path_to_save_att_dist_diff", "-psa", type=str, default="results")
+    parser.add_argument("--path_to_save_figure", "-psf", type=str, default="figs")
     parser.add_argument("--seed", type=int, default=666)
     parser.add_argument("--epoch1", type=int, default=0, help="A model checkpoint to compare attention distance.")
     parser.add_argument("--epoch2", type=int, default=4, help="Another model checkpoint to compare attention distance.")
