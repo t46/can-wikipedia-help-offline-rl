@@ -54,7 +54,9 @@ def experiment(
         NotImplementedError: Model type is not implemented.
 
     """
-    assert (variant["pretrained_lm"] != "gpt2") and (variant["pretrained_block"] is not None)
+    assert (variant["pretrained_lm"] != "gpt2") and (
+        variant["pretrained_block"] is not None
+    )
     # NOTE: When variant["pretrained_lm"] == False,
     # NOTE: a Transformer block of rand-init model is just replaced by that of another rand-init model.
     # NOTE: When variant["pretrained_lm"] == openai/imagegpt-small, the number of layers can be different b/w
@@ -382,7 +384,9 @@ def experiment(
         raise NotImplementedError
 
     if pretrained_block:
-        for i in range(12):  # `model` (dt) and `model_pretrained` (gpt2) have 12 Transformer blocks.
+        for i in range(
+            12
+        ):  # `model` (dt) and `model_pretrained` (gpt2) have 12 Transformer blocks.
             if i == pretrained_block:
                 model.transformer.h[i] = model_pretrained.transformer.h[i]
                 # model.transformer.h[i] is the i-th Transformer block of `model`.
@@ -466,7 +470,13 @@ if __name__ == "__main__":
     parser.add_argument("--dropout", type=float, default=0.1)
 
     parser.add_argument("--learning_rate", "-lr", type=float, default=1e-4)
-    parser.add_argument("--lm_learning_rate", "-lmlr", type=float, default=None, help="We did not use this option.")
+    parser.add_argument(
+        "--lm_learning_rate",
+        "-lmlr",
+        type=float,
+        default=None,
+        help="We did not use this option.",
+    )
     parser.add_argument("--weight_decay", "-wd", type=float, default=1e-4)
     parser.add_argument("--warmup_steps", type=int, default=5000)  # 10000
 
@@ -486,16 +496,42 @@ if __name__ == "__main__":
 
     parser.add_argument("--seed", type=int, default=666)
     parser.add_argument("--outdir", type=str, default="checkpoints")
-    parser.add_argument("--fp16", action="store_true", default=False, help="We did not use this option.")
+    parser.add_argument(
+        "--fp16", action="store_true", default=False, help="We did not use this option."
+    )
 
-    parser.add_argument("--frozen", action="store_true", default=False, help="We did not use this option.")
-    parser.add_argument("--gpt_kmeans", type=int, default=None, help="We did not use this option.")
-    parser.add_argument("--extend_positions", action="store_true", default=False, help="We did not use this option.")
-    parser.add_argument("--gpt_kmeans_const", type=float, default=None, help="We did not use this option.")
-    parser.add_argument("--kmeans_cache", type=str, default=None, help="We did not use this option.")
+    parser.add_argument(
+        "--frozen",
+        action="store_true",
+        default=False,
+        help="We did not use this option.",
+    )
+    parser.add_argument(
+        "--gpt_kmeans", type=int, default=None, help="We did not use this option."
+    )
+    parser.add_argument(
+        "--extend_positions",
+        action="store_true",
+        default=False,
+        help="We did not use this option.",
+    )
+    parser.add_argument(
+        "--gpt_kmeans_const",
+        type=float,
+        default=None,
+        help="We did not use this option.",
+    )
+    parser.add_argument(
+        "--kmeans_cache", type=str, default=None, help="We did not use this option."
+    )
 
     parser.add_argument("--share_input_output_proj", action="store_true", default=False)
-    parser.add_argument("--kmeans_mean", action="store_true", default=False, help="We did not use this option.")
+    parser.add_argument(
+        "--kmeans_mean",
+        action="store_true",
+        default=False,
+        help="We did not use this option.",
+    )
 
     parser.add_argument(
         "--remove_grad_clip",
