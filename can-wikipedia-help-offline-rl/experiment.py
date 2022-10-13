@@ -54,6 +54,15 @@ def experiment(
         NotImplementedError: Model type is not implemented.
 
     """
+    assert (variant["pretrained_lm"] == "gpt2") or (
+        variant["pretrained_block"] is None
+    )
+    # NOTE: (variant["pretrained_lm"] == "gpt2" AND variant["pretrained_block"] is not None) is not acceptable.
+    # NOTE: When variant["pretrained_lm"] == False,
+    # NOTE: a Transformer block of rand-init model is just replaced by that of another rand-init model.
+    # NOTE: When variant["pretrained_lm"] == openai/imagegpt-small, the number of layers can be different b/w
+    # NOTE: rand-init model and image-pre-trained model.
+
     seed = variant["seed"]
     torch.manual_seed(seed)
     device = variant.get("device", "cuda")
@@ -67,6 +76,8 @@ def experiment(
 
     if (variant["pretrained_lm"] is None) or (pretrained_block is not None):
         model_name = "dt"
+    elif variant["pretrained_lm"] == "openai/imagegpt-small":
+        model_name = "igpt"
     else:
         model_name = variant["pretrained_lm"]
     exp_name = f"{group_name}-{model_name}-{seed}"
@@ -78,7 +89,7 @@ def experiment(
     if variant["remove_grad_clip"]:
         exp_name += "-no-grad-clip"
         out_dir += "_no_grad_clip"
-    if pretrained_block:
+    if pretrained_block is not None:
         exp_name += f"-block{pretrained_block}"
         out_dir += f"_block{pretrained_block}"
 
@@ -374,7 +385,9 @@ def experiment(
         raise NotImplementedError
 
     if pretrained_block:
-        for i in range(12):  # `model` (dt) and `model_pretrained` (gpt2) have 12 Transformer blocks.
+        for i in range(
+            12
+        ):  # `model` (dt) and `model_pretrained` (gpt2) have 12 Transformer blocks.
             if i == pretrained_block:
                 model.transformer.h[i] = model_pretrained.transformer.h[i]
                 # model.transformer.h[i] is the i-th Transformer block of `model`.
@@ -458,7 +471,13 @@ if __name__ == "__main__":
     parser.add_argument("--dropout", type=float, default=0.1)
 
     parser.add_argument("--learning_rate", "-lr", type=float, default=1e-4)
-    parser.add_argument("--lm_learning_rate", "-lmlr", type=float, default=None)
+    parser.add_argument(
+        "--lm_learning_rate",
+        "-lmlr",
+        type=float,
+        default=None,
+        help="We did not use this option.",
+    )
     parser.add_argument("--weight_decay", "-wd", type=float, default=1e-4)
     parser.add_argument("--warmup_steps", type=int, default=5000)  # 10000
 
@@ -469,35 +488,64 @@ if __name__ == "__main__":
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument(
         "--pretrained_lm",
+        "-plm",
         type=str,
         default=None,
-        help="gpt2 or igpt. The model without this option corresponds to randomly initialized model.",
+        help="gpt2 or openai/imagegpt-small. The model without this option corresponds to randomly initialized model.",
     )
     parser.add_argument("--load_checkpoint", type=str, default=None)
     parser.add_argument("--log_to_wandb", "-w", action="store_true", default=False)
 
     parser.add_argument("--seed", type=int, default=666)
-    parser.add_argument("--outdir", type=str, default=None)
-    parser.add_argument("--fp16", action="store_true", default=False)
+    parser.add_argument("--outdir", type=str, default="checkpoints")
+    parser.add_argument(
+        "--fp16", action="store_true", default=False, help="We did not use this option."
+    )
 
-    parser.add_argument("--frozen", action="store_true", default=False)
-    parser.add_argument("--gpt_kmeans", type=int, default=None)
-    parser.add_argument("--extend_positions", action="store_true", default=False)
-    parser.add_argument("--gpt_kmeans_const", type=float, default=None)
-    parser.add_argument("--kmeans_cache", type=str, default=None)
+    parser.add_argument(
+        "--frozen",
+        action="store_true",
+        default=False,
+        help="We did not use this option.",
+    )
+    parser.add_argument(
+        "--gpt_kmeans", type=int, default=None, help="We did not use this option."
+    )
+    parser.add_argument(
+        "--extend_positions",
+        action="store_true",
+        default=False,
+        help="We did not use this option.",
+    )
+    parser.add_argument(
+        "--gpt_kmeans_const",
+        type=float,
+        default=None,
+        help="We did not use this option.",
+    )
+    parser.add_argument(
+        "--kmeans_cache", type=str, default=None, help="We did not use this option."
+    )
 
     parser.add_argument("--share_input_output_proj", action="store_true", default=False)
-    parser.add_argument("--kmeans_mean", action="store_true", default=False)
+    parser.add_argument(
+        "--kmeans_mean",
+        action="store_true",
+        default=False,
+        help="We did not use this option.",
+    )
 
     parser.add_argument(
         "--remove_grad_clip",
+        "-rgc",
         action="store_true",
         default=False,
-        help="This is only for G.3 Analysis of the Effect of Gradient Clipping",
+        help="This is only for G.3 Analysis of the Effect of Gradient Clipping.",
     )
     parser.add_argument("--data_path", type=str, default="data")
     parser.add_argument(
         "--pretrained_block",
+        "-pb",
         type=int,
         default=None,
         help="This is for block replacement experiment. The value ranges from 0 to 11. \

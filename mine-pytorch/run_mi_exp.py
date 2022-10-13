@@ -71,19 +71,25 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--path_to_save_mi",
+        "-psm",
         type=str,
+        default="../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information/results",
         help="The mutual information stored here will be recalled during the analysis in \
                             ../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information.",
     )
     parser.add_argument(
         "--path_to_data",
+        "-pd",
         type=str,
+        default="../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information/results",
         help="This is the path of the stored batch of D4RL data sampled by \
                         ../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information/save_activation.py.",
     )
     parser.add_argument(
         "--path_to_activation",
+        "-pa"
         type=str,
+        default="../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information/results",
         help="This is the path of the stored activation extracted by \
                         ../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information/save_activation.py.",
     )

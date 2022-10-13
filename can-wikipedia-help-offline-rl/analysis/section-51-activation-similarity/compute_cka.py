@@ -295,10 +295,10 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path_to_load_data", type=str, default="../../data")
-    parser.add_argument("--path_to_load_model", type=str, default="../../checkpoints")
-    parser.add_argument("--path_to_save_cka", type=str, default="results")
-    parser.add_argument("--path_to_save_figure", type=str, default="figs")
+    parser.add_argument("--path_to_load_data", "-pld", type=str, default="../../data")
+    parser.add_argument("--path_to_load_model", "-plm", type=str, default="../../checkpoints")
+    parser.add_argument("--path_to_save_cka", "-psc", type=str, default="results")
+    parser.add_argument("--path_to_save_figure", "-psf", type=str, default="figs")
     parser.add_argument("--seed", type=int, default=666)
     parser.add_argument(
         "--model1",

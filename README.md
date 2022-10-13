@@ -1,10 +1,14 @@
 
 # On the Effect of Pre-training for Transformer in Different Modality on Offline Reinforcement Learning 
-This repository contains the code for *On the Effect of Pre-training for Transformer in Different Modality on Offline Reinforcement Learning*. Most of our code is based on the following repositories:
+This repository contains the code for *"On the Effect of Pre-training for Transformer in Different Modality on Offline Reinforcement Learning"*. The LaTeX source for our paper is availabe at https://github.com/t46/paper-pre-training-different-modality-offline-rl.
+
+Most of our code is based on the following repositories:
 - https://github.com/machelreid/can-wikipedia-help-offline-rl
   - https://github.com/rail-berkeley/d4rl
 - https://github.com/gtegner/mine-pytorch
 - https://github.com/google-research/google-research/tree/master/representation_similarity
+
+We sincerely thank the contributors for making the code available to us. Our research would not have been possible without these codes.
 
 The primary files and directories used to generate the results of the paper are the following:
 ```
@@ -96,7 +100,7 @@ python experiment.py \
 --n_layer 12 \
 -w
 ```
-For pre-trained models, add `--pretrained_lm gpt2` for *language-pre-trained model (GPT2)* and `--pretrained_lm openai/imagegpt-small` for *image-pre-trained model (iGPT)*. Running command above outputs per epoch i) fine-tuned models under `./checkpoints` directory, i.e. `checkpoints/dt_medium_hopper_666/model_40.pt` and ii) results such as mean return and action error to wandb. For sanity check in Section 4, run `sanity_check_preformance.ipynb` after running the above command (Table 1). Run the command for all environments (`--env`: `hopper`, `halfcheetah`, and `walker2d`) and all types of models (`--pretrained_lm`: "not added", `gpt2`, and `igpt` ), respectively.
+For pre-trained models, add `--pretrained_lm gpt2` for *language-pre-trained model (GPT2)* and `--pretrained_lm openai/imagegpt-small` for *image-pre-trained model (iGPT)*. Running command above outputs per epoch i) fine-tuned models under `./checkpoints` directory, i.e. `checkpoints/dt_medium_hopper_666/model_40.pt` and ii) results such as mean return and action error to wandb. For sanity check in Section 4, run `sanity_check_preformance.ipynb` after running the above command (Table 1). Run the command for all environments (`--env`: `hopper`, `halfcheetah`, and `walker2d`) and all types of models (`--pretrained_lm`: "not added", `gpt2`, and `openai/imagegpt-small` ), respectively.
 
 For the results of Section 5.5 and 5.6.2 (context K=1), just add `--K 1` option. For block replacement experiment (Section 5.6.1), In addition to `--K 1`, add `--pretrained_block {replaced_block_id}` and `--max_iters 10`. You run the command for all environments (`--env`: `hopper`, `halfcheetah`, and `walker2d`), two types of pre-trained models (`--pretrained_lm`: "not added" and `gpt2`), and all block ids (`--pretrained_block`: 0, ..., 11) respectively.
 
@@ -108,7 +112,7 @@ The script and notebooks for activation similarity analisis are in `analysis/sec
 - `compute_cka.ipynb` (`compute_cka.py`)
   - Compute CKA between activations of two models, which output the CKA values used to plot Figure.1.
 - `plot_cka.ipynb`
-  - Plot Figure.1 from the CKA values save in `compute-cka.ipynb`.
+  - Plot Figure.1 from the CKA values save in `compute_cka.ipynb`.
 ### 5.2 Mutual Information Between Hidden Representation and Data
 ![image info](./figs/section52.png)
 The code to run mutual information estimateion by MINE is in `mine-pytorch` and the notebook and script for activation similarity analisis are in `analysis/section-52-mutual-information`
@@ -165,13 +169,13 @@ The following two analyses are done during rebuttal period, the result of which 
 
 ### G.3 Analysis of the Effect of Gradient Clipping
 ![image info](./figs/appendixg3.png)
-Run `experiment.py` with `--remove-grad-clip` option.
+Run `experiment.py` with `--remove_grad_clip` option.
 ```{sh}
 python experiment.py \
 --env hopper \
 --dataset medium \
 --model_type dt \
---pretrained_lm igpt
+--pretrained_lm openai/imagegpt-small \
 --seed 666 \
 --outdir checkpoints \
 --dropout 0.2 \
@@ -179,7 +183,7 @@ python experiment.py \
 --warmup_steps 5000 \
 -w \
 --max_iters 10 \
---remove-grad-clip 
+--remove_grad_clip 
 ```
 Then, plot the figures in the jupyter notebook. The notebook for this analysis is in `analysis/section-54-gradient-analysis`.
 - `plot_learning_curve_grad_clip.ipynb`
@@ -196,11 +200,7 @@ The notebook for comparing mutual information of different data type is in `anal
     ```
     cd mine-pytorch
     conda activate mine
-    python run_mi_exp.py \
-    --path_to_save_mi YOUR_SAVE_PATH \
-    --path_to_data YOUR_DATA_PATH \
-    --path_to_activation YOUR_ACTIVATION_PATH \
-    --exp_type data 
+    python run_mi_exp.py --exp_type data 
     conda deactivate mine
     cd ../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information
     ```
