@@ -57,6 +57,7 @@ def experiment(
     assert (variant["pretrained_lm"] == "gpt2") or (
         variant["pretrained_block"] is None
     )
+    # NOTE: (variant["pretrained_lm"] == "gpt2" AND variant["pretrained_block"] is not None) is not acceptable.
     # NOTE: When variant["pretrained_lm"] == False,
     # NOTE: a Transformer block of rand-init model is just replaced by that of another rand-init model.
     # NOTE: When variant["pretrained_lm"] == openai/imagegpt-small, the number of layers can be different b/w
