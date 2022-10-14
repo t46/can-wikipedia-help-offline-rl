@@ -3,6 +3,7 @@ Compare learning curves between w/ grad clip and w/o grad clip.
 """
 
 import argparse
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,12 +14,13 @@ sns.set_style("ticks")
 sns.set_context("paper", 1.5, {"lines.linewidth": 2})
 
 
-def get_return_from_wandb(model_name, env_name, seed, remove_grad, wandb_project_name):
+def get_return_from_wandb(model_name, env_name, dataset_name, seed, remove_grad, wandb_project_name):
     """Get mean return from wandb
 
     Args:
         model_name (str): 'gpt2', 'igpt', or 'dt'.
         env_name (str): 'hopper', 'halfcheetah', or 'walker2d'.
+        dataset_name (str): 'medium'
         seed (int): Random seed used for experiments.
         remove_grad (bool): If True, return the results without grad clip.
         wandb_project_name (str): Your Wandb project name.
@@ -42,7 +44,7 @@ def get_return_from_wandb(model_name, env_name, seed, remove_grad, wandb_project
         for run in runs:
             if (
                 run.name
-                == f"gym-experiment-{env_name}-medium-{model_name}-{seed}-no-grad-clip"
+                == f"gym-experiment-{env_name}-{dataset_name}-{model_name}-{seed}-no-grad-clip"
             ):
                 break
         return_mean = run.history()[
@@ -51,7 +53,7 @@ def get_return_from_wandb(model_name, env_name, seed, remove_grad, wandb_project
         return return_mean
     else:
         for run in runs:
-            if run.name == f"gym-experiment-{env_name}-medium-{model_name}-{seed}":
+            if run.name == f"gym-experiment-{env_name}-{dataset_name}-{model_name}-{seed}":
                 break
         return_mean = run.history()[
             f"evaluation/target_{rtg_conditioning}_return_mean"
@@ -60,13 +62,14 @@ def get_return_from_wandb(model_name, env_name, seed, remove_grad, wandb_project
 
 
 def get_action_error_from_wandb(
-    model_name, env_name, seed, remove_grad, wandb_project_name
+    model_name, env_name, dataset_name, seed, remove_grad, wandb_project_name
 ):
     """Get action errors.
 
     Args:
         model_name (str): 'gpt2', 'igpt', or 'dt'.
         env_name (str): 'hopper', 'halfcheetah', or 'walker2d'.
+        dataset_name (str): 'medium'
         seed (int): Random seed used for experiments.
         remove_grad (bool): If True, return the results without grad clip.
         wandb_project_name (str): Your Wandb project name.
@@ -81,14 +84,14 @@ def get_action_error_from_wandb(
         for run in runs:
             if (
                 run.name
-                == f"gym-experiment-{env_name}-medium-{model_name}-{seed}-no-grad-clip"
+                == f"gym-experiment-{env_name}-{dataset_name}-{model_name}-{seed}-no-grad-clip"
             ):
                 break
         action_error = run.history()["training/action_error"][:10]
         return action_error
     else:
         for run in runs:
-            if run.name == f"gym-experiment-{env_name}-medium-{model_name}-{seed}":
+            if run.name == f"gym-experiment-{env_name}-{dataset_name}-{model_name}-{seed}":
                 break
         action_error = run.history()["training/action_error"][:10]
         return action_error
@@ -106,12 +109,16 @@ def main(args):
     path_to_save_figure = args["path_to_save_figure"]
     wandb_project_name = args["wandb_project_name"]
 
+    os.makedirs(path_to_return, exist_ok=True)
+    os.makedirs(path_to_action_error, exist_ok=True)
+    os.makedirs(path_to_save_figure, exist_ok=True)
+
     if from_wandb:
         return_mean = get_return_from_wandb(
-            model_name, env_name, seed, False, wandb_project_name
+            model_name, env_name, dataset_name, seed, False, wandb_project_name
         )
         return_mean_no_grad_clip = get_return_from_wandb(
-            model_name, env_name, seed, True, wandb_project_name
+            model_name, env_name, dataset_name, seed, True, wandb_project_name
         )
         np.save(
             f"{path_to_return}/returnmean_{model_name}_{env_name}_{dataset_name}_{seed}.npy",
@@ -123,10 +130,10 @@ def main(args):
         )
 
         action_error = get_action_error_from_wandb(
-            model_name, env_name, seed, False, wandb_project_name
+            model_name, env_name, dataset_name, seed, False, wandb_project_name
         )
         action_error_no_grad_clip = get_action_error_from_wandb(
-            model_name, env_name, seed, True, wandb_project_name
+            model_name, env_name, dataset_name, seed, True, wandb_project_name
         )
         np.save(
             f"{path_to_action_error}/action_error_{model_name}_{env_name}_{dataset_name}_{seed}.npy",
