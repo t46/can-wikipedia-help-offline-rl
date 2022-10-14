@@ -87,7 +87,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--path_to_activation",
-        "-pa"
+        "-pa",
         type=str,
         default="../can-wikipedia-help-offline-rl/analysis/section-52-mutual-information/results",
         help="This is the path of the stored activation extracted by \
