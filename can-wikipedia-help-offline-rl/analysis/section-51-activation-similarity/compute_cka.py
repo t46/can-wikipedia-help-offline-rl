@@ -116,7 +116,7 @@ def plot_cka(
         plt.savefig(
             f"{path_to_save_figure}/cka_{epoch1}_{epoch2}_{model1}{model2}_{env_name}_{dataset_name}_{seed}_{reward_state_action}.pdf"
         )
-    plt.show()
+    plt.close()
 
 
 def run_cka(
@@ -315,7 +315,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--epoch1",
         type=int,
-        default=40,
+        default=0,
         help="A model checkpoint to measure CKA similarity.",
     )
     parser.add_argument(

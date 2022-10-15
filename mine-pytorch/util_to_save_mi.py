@@ -41,7 +41,7 @@ def run_to_save_mi(
     if model_name == "igpt":
         keys = ["0.mlp.dropout", "12.mlp.dropout", "23.mlp.dropout"]
     else:
-        keys = ["6.mlp.dropout"]
+        keys = ["0.mlp.dropout", "6.mlp.dropout", "11.mlp.dropout"]
 
     for key in tqdm(keys):
 
