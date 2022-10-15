@@ -28,7 +28,7 @@ We provide conda environments `mine` for mutual information calculation by MINE 
 ### Install MuJoCo
 Our experiments use the mujoco task in D4RL, a benchmark task for offline reinforcement learning. Therefore, first install the mujoco.
 
-D4RL (`6330b4e`) depends on `mujoco-py` (2.1.2.14) which requires `mujoco210`. Thus, install `mujoco210` following the instruction of [the repository](https://github.com/openai/mujoco-py) of `mujoco-py`. We excerpted the instruction from the repository below:
+[`D4RL`](https://github.com/Farama-Foundation/D4RL/tree/6330b4e09e36a80f4b706a3885d59d97745c05a9) depends on `mujoco-py` (2.1.2.14) which requires `mujoco210`. Thus, install `mujoco210` following the instruction of [the repository](https://github.com/openai/mujoco-py) of `mujoco-py`. We excerpted the instruction from the repository below:
 > Download the MuJoCo version 2.1 binaries for [Linux](https://mujoco.org/download/mujoco210-linux-x86_64.tar.gz) or [OSX](https://mujoco.org/download/mujoco210-macos-x86_64.tar.gz).
 >
 > Extract the downloaded `mujoco210` directory into `~/.mujoco/mujoco210`.
@@ -49,7 +49,7 @@ cd data
 git clone https://github.com/rail-berkeley/d4rl.git
 cd d4rl
 ```
-D4RL (`6330b4e`) depends on `dm-control` and `mujoco-py`. While the latest version of `dm-control` (1.0.7) requires `mujoco-2.1.1`, that of `mujoco-py` (2.1.2.14) requires `mujoco210`. Therefore, you should downgrade `dm-control` so that you use D4RL with `mujoco210` (See the [reference](https://github.com/Farama-Foundation/D4RL/issues/144)).
+[`D4RL`](https://github.com/Farama-Foundation/D4RL/tree/6330b4e09e36a80f4b706a3885d59d97745c05a9) depends on `dm-control` and `mujoco-py`. While the latest version of `dm-control` (1.0.7) requires `mujoco-2.1.1`, that of `mujoco-py` (2.1.2.14) requires `mujoco210`. Therefore, you should downgrade `dm-control` so that you use D4RL with `mujoco210` (See the [reference](https://github.com/Farama-Foundation/D4RL/issues/144)).
 
 To that end, edit `setupy.py` in the cloned D4RL repository. Specifically, change `'dm_control>=1.0.3'` in `setupy.py` to `'dm_control @ git+https://github.com/deepmind/dm_control@644d9e0047f68b35a6f8b79e5e8493e2910563af'`.
 
@@ -100,26 +100,26 @@ python experiment.py \
 --n_layer 12 \
 -w
 ```
-For pre-trained models, add `--pretrained_lm gpt2` for *language-pre-trained model (GPT2)* and `--pretrained_lm openai/imagegpt-small` for *image-pre-trained model (iGPT)*. Running command above outputs per epoch i) fine-tuned models under `./checkpoints` directory, i.e. `checkpoints/dt_medium_hopper_666/model_40.pt` and ii) results such as mean return and action error to wandb. For sanity check in Section 4, run `sanity_check_preformance.ipynb` after running the above command (Table 1). Run the command for all environments (`--env`: `hopper`, `halfcheetah`, and `walker2d`) and all types of models (`--pretrained_lm`: "not added", `gpt2`, and `openai/imagegpt-small` ), respectively.
+For pre-trained models, add `--pretrained_lm gpt2` for *language-pre-trained model (GPT2)* and `--pretrained_lm openai/imagegpt-small` for *image-pre-trained model (iGPT)*. Running command above outputs per epoch i) fine-tuned models under `./checkpoints` directory, i.e. `checkpoints/dt_medium_hopper_666/model_40.pt` and ii) results such as mean return and action error to wandb. For sanity check in Section 4, run `analysis/section-4-sanity-check/sanity_check_preformance.ipynb` (`sanity_check_preformance.py`) after running the above command (Table 1). Run the command for all environments (`--env`: `hopper`, `halfcheetah`, and `walker2d`) and all types of models (`--pretrained_lm`: "not added", `gpt2`, and `openai/imagegpt-small` ), respectively.
 
 For the results of Section 5.5 and 5.6.2 (context K=1), just add `--K 1` option. For block replacement experiment (Section 5.6.1), In addition to `--K 1`, add `--pretrained_block {replaced_block_id}` and `--max_iters 10`. You run the command for all environments (`--env`: `hopper`, `halfcheetah`, and `walker2d`), two types of pre-trained models (`--pretrained_lm`: "not added" and `gpt2`), and all block ids (`--pretrained_block`: 0, ..., 11) respectively.
 
 ## Analysis
-The codes for all analyses, except for the mutual information estimation, are under `can-wikipedia-help-offline-rl/analysis`. For those that require data sampling for analysis, we provide python scripts in addition to jupyter notebooks. Both scripts and notebooks perform the same analysis.
+The codes for all analyses, except for the mutual information estimation, are under `can-wikipedia-help-offline-rl/analysis`. We provide both python scripts and jupyter notebooks. Both scripts and notebooks perform the same analysis.
 ### 5.1 Activation Similarity
 ![image info](./figs/section51.png)
 The script and notebooks for activation similarity analisis are in `analysis/section-51-activation-similarity`.
 - `compute_cka.ipynb` (`compute_cka.py`)
   - Compute CKA between activations of two models, which output the CKA values used to plot Figure.1.
-- `plot_cka.ipynb`
+- `plot_cka.ipynb` (`plot_cka.py`)
   - Plot Figure.1 from the CKA values save in `compute_cka.ipynb`.
 ### 5.2 Mutual Information Between Hidden Representation and Data
 ![image info](./figs/section52.png)
 The code to run mutual information estimateion by MINE is in `mine-pytorch` and the notebook and script for activation similarity analisis are in `analysis/section-52-mutual-information`
 
-- `mutual_information.ipynb`
+- `mutual_information.ipynb` (`plot_mutual_information.py`)
   - Plot Figure 2 and 16 from estimated mutual information by `mine-pytorch/run_mi_exp.py`.
-- `save_activation.ipynb`
+- `save_activation.py`
   - Save hidden representation used to estimate mutual information in `mine-pytorch/run_mi_exp.py`.
 
 The steps for mutual information estimation are following:
@@ -141,7 +141,7 @@ The steps for mutual information estimation are following:
 ### 5.3 Parameter Similarity
 ![image info](./figs/section53.png)
 The notebook for activation similarity analisis is in `analysis/section-53-parameter-similarity`.
-- `parameter_similarity_analysis.ipynb`
+- `parameter_similarity_analysis.ipynb` (`parameter_similarity_analysis.py`)
   - Compute parameter similarity and plot Figures 3 and 4.
 ### 5.4 Gradient Analysis
 ![image info](./figs/section54.png)
@@ -154,7 +154,7 @@ The notebooks and scripts for gradient analisis are in `analysis/section-54-grad
 ![image info](./figs/section55.png)
 ![image info](./figs/section561.png)
 tebook to plot the results of fine-tuning with no context is in `analysis/section-55-fine-tuning-no-context`.
-- `plot_learning_curve_no_context.ipynb`
+- `plot_learning_curve_no_context.ipynb` (`plot_learning_curve_no_context.py`)
   - Plot Figures 8 and 9
     - Note that Figure 9 is created by this notebook, though Figure 9 is in Section 5.6.
   - Obtain the result to create Table 2.
@@ -186,14 +186,14 @@ python experiment.py \
 --remove_grad_clip 
 ```
 Then, plot the figures in the jupyter notebook. The notebook for this analysis is in `analysis/section-54-gradient-analysis`.
-- `plot_learning_curve_grad_clip.ipynb`
+- `plot_learning_curve_grad_clip.ipynb` (`plot_learning_curve_grad_clip.py`)
   - Plot Figures 19 and 20.
 
 ### H.2 Analysis of Why Randomly Initialized Model Fails for Hopper with No Context
 ![image info](./figs/appendixh2.png)
 The notebook for comparing mutual information of different data type is in `analysis/section-52-mutual-information`.
 
-- `mutual_information_data.ipynb`
+- `mutual_information_data.ipynb` (`mutual_information_data.py`)
   - Plot Figure 22.
 
 1. Run `run_mi_exp.py` with `--exp_type data` option.
